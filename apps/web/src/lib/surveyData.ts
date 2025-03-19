@@ -1,21 +1,4 @@
-export interface SurveyQuestion {
-  id: string;
-  type: 'radio' | 'checkbox' | 'slider' | 'text';
-  question: string;
-  description?: string;
-  options?: Array<{
-    id: string;
-    text: string;
-    value: any;
-  }>;
-  sliderConfig?: {
-    min: number;
-    max: number;
-    step: number;
-    labels?: string[];
-  };
-  imageUrl?: string;
-}
+import { baumannSurveyQuestions, categoryTitles, getQuestionsByCategory } from './surveyQuestions';
 
 export interface SurveyData {
   [key: string]: any;
@@ -23,15 +6,18 @@ export interface SurveyData {
 
 // 사용자의 설문 응답을 로컬 스토리지에 저장
 export function saveUserSurveyData(surveyData: SurveyData): void {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('my-skin-metrix-survey-data', JSON.stringify(surveyData));
+  if (typeof window !== "undefined") {
+    localStorage.setItem(
+      "my-skin-metrix-survey-data",
+      JSON.stringify(surveyData)
+    );
   }
 }
 
 // 로컬 스토리지에서 사용자의 설문 응답 불러오기
 export function getUserSurveyData(): SurveyData | null {
-  if (typeof window !== 'undefined') {
-    const data = localStorage.getItem('my-skin-metrix-survey-data');
+  if (typeof window !== "undefined") {
+    const data = localStorage.getItem("my-skin-metrix-survey-data");
     return data ? JSON.parse(data) : null;
   }
   return null;
@@ -39,100 +25,304 @@ export function getUserSurveyData(): SurveyData | null {
 
 // 마지막으로 완료한 설문 단계 저장
 export function saveLastCompletedStep(step: number): void {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('my-skin-metrix-last-step', step.toString());
+  if (typeof window !== "undefined") {
+    localStorage.setItem("my-skin-metrix-last-step", step.toString());
   }
 }
 
 // 마지막으로 완료한 설문 단계 가져오기
 export function getLastCompletedStep(): number {
-  if (typeof window !== 'undefined') {
-    const step = localStorage.getItem('my-skin-metrix-last-step');
+  if (typeof window !== "undefined") {
+    const step = localStorage.getItem("my-skin-metrix-last-step");
     return step ? parseInt(step, 10) : 0;
   }
   return 0;
 }
 
-// 샘플 설문 질문 데이터
-export const surveyQuestions: SurveyQuestion[] = [
-  {
-    id: 'skin_type',
-    type: 'radio',
-    question: '당신의 피부 타입은 어떻게 되나요?',
-    description: '평소 느끼는 피부 상태를 기준으로 선택해주세요.',
-    options: [
-      { id: 'dry', text: '건성 - 당김이 자주 느껴지고 각질이 잘 일어납니다', value: 'dry' },
-      { id: 'oily', text: '지성 - 기름기가 많고 번들거리는 경우가 많습니다', value: 'oily' },
-      { id: 'combination', text: '복합성 - T존은 지성, 볼 부위는 건성인 편입니다', value: 'combination' },
-      { id: 'normal', text: '중성 - 특별한 문제 없이 균형잡힌 상태입니다', value: 'normal' },
-      { id: 'sensitive', text: '민감성 - 자극에 쉽게 반응하고 붉어지거나 따갑습니다', value: 'sensitive' }
-    ]
-  },
-  {
-    id: 'skin_concern',
-    type: 'checkbox',
-    question: '현재 가장 고민되는 피부 문제는 무엇인가요?',
-    description: '해당되는 사항을 모두 선택해주세요.',
-    options: [
-      { id: 'acne', text: '여드름/뾰루지', value: 'acne' },
-      { id: 'wrinkles', text: '주름', value: 'wrinkles' },
-      { id: 'pigmentation', text: '색소침착/기미', value: 'pigmentation' },
-      { id: 'pores', text: '모공 확대', value: 'pores' },
-      { id: 'dryness', text: '건조함', value: 'dryness' },
-      { id: 'oiliness', text: '과다 유분', value: 'oiliness' },
-      { id: 'sensitivity', text: '민감성/발적', value: 'sensitivity' },
-      { id: 'dullness', text: '칙칙함/톤 불균일', value: 'dullness' }
-    ]
-  },
-  {
-    id: 'hydration_level',
-    type: 'slider',
-    question: '세안 후 아무것도 바르지 않았을 때 피부 당김을 얼마나 느끼시나요?',
-    description: '세안 후 30분 경과 시점을 기준으로 답변해주세요.',
-    sliderConfig: {
-      min: 1,
-      max: 5,
-      step: 1,
-      labels: ['매우 심함', '심함', '보통', '약간', '전혀 없음']
-    }
-  },
-  {
-    id: 'oil_production',
-    type: 'slider',
-    question: '하루 중 피부가 얼마나 번들거리나요?',
-    description: '평소 메이크업이나 기초 제품을 바른 상태에서의 경험을 기준으로 답변해주세요.',
-    sliderConfig: {
-      min: 1,
-      max: 5,
-      step: 1,
-      labels: ['전혀 안 됨', '약간', '보통', '많은 편', '매우 많음']
-    }
-  },
-  {
-    id: 'sensitivity_level',
-    type: 'radio',
-    question: '새로운 스킨케어 제품을 사용했을 때 피부가 어떻게 반응하나요?',
-    options: [
-      { id: 'very_reactive', text: '매우 민감하게 반응 (붉어짐, 따가움, 발진 등)', value: 'very_reactive' },
-      { id: 'sometimes_reactive', text: '가끔 반응함 (제품에 따라 다름)', value: 'sometimes_reactive' },
-      { id: 'rarely_reactive', text: '거의 반응하지 않음', value: 'rarely_reactive' },
-      { id: 'never_reactive', text: '어떤 제품을 사용해도 거의 반응하지 않음', value: 'never_reactive' }
-    ]
-  }
-];
+// categoryTitles와 getQuestionsByCategory 다시 내보내기
+export { categoryTitles, getQuestionsByCategory };
 
-// 나이대 질문(타입에 따라 추가 제공)
-export const ageQuestion: SurveyQuestion = {
-  id: 'age_range',
-  type: 'radio',
-  question: '연령대가 어떻게 되시나요?',
-  description: '더 정확한 분석을 위해 알려주세요.',
-  options: [
-    { id: 'under_20', text: '20세 미만', value: 'under_20' },
-    { id: '20s', text: '20-29세', value: '20s' },
-    { id: '30s', text: '30-39세', value: '30s' },
-    { id: '40s', text: '40-49세', value: '40s' },
-    { id: '50s', text: '50-59세', value: '50s' },
-    { id: '60_plus', text: '60세 이상', value: '60_plus' }
-  ]
-}; 
+// 설문 질문 데이터 - 기존 코드의 샘플 질문은 제거하고 새로운 질문 데이터 사용
+export const surveyQuestions = baumannSurveyQuestions;
+
+// 바우만 피부 타입 분석 함수
+export function analyzeBaumannSkinType(data: SurveyData) {
+  // D/O (건성/지성) 분석
+  const doScore = calculateDOScore(data);
+  const doType = doScore < 50 ? "D" : "O";
+
+  // S/R (민감성/저항성) 분석
+  const srScore = calculateSRScore(data);
+  const srType = srScore < 50 ? "S" : "R";
+
+  // P/N (색소침착/비색소침착) 분석
+  const pnScore = calculatePNScore(data);
+  const pnType = pnScore < 50 ? "P" : "N";
+
+  // W/T (주름/탄력) 분석
+  const wtScore = calculateWTScore(data);
+  const wtType = wtScore < 50 ? "W" : "T";
+
+  // 피부 장벽 기능 점수
+  const barrierScore = calculateBarrierScore(data);
+  
+  // 생활 습관 점수
+  const lifestyleScore = calculateLifestyleScore(data);
+
+  return {
+    skinType: `${doType}${srType}${pnType}${wtType}`,
+    scores: {
+      doScore,
+      srScore,
+      pnScore,
+      wtScore,
+      barrierScore,
+      lifestyleScore
+    }
+  };
+}
+
+// D/O 점수 계산 (건성/지성)
+function calculateDOScore(data: SurveyData): number {
+  let score = 50; // 중간값에서 시작
+
+  // 아침 피부 상태
+  if (data.morning_skin_condition) {
+    score += (data.morning_skin_condition - 3) * 10;
+  }
+  
+  // 하루 중 유분 패턴
+  if (data.daily_oil_pattern) {
+    score += (data.daily_oil_pattern - 3) * 8;
+  }
+
+  // 메이크업 후 변화
+  if (data.makeup_change) {
+    score += (data.makeup_change - 3) * 6;
+  }
+
+  // 선호하는 스킨케어 제품 텍스처
+  if (data.preferred_skincare_texture) {
+    score += (data.preferred_skincare_texture - 3) * 6;
+  }
+
+  return Math.max(0, Math.min(100, score));
+}
+
+// S/R 점수 계산 (민감성/저항성)
+function calculateSRScore(data: SurveyData): number {
+  let score = 50;
+
+  // 새 제품 반응
+  if (data.new_product_reaction) {
+    score -= (data.new_product_reaction - 3) * 10;
+  }
+  
+  // X개 외부 요인에 민감함
+  if (data.external_factors_sensitivity && Array.isArray(data.external_factors_sensitivity)) {
+    // 체크 수에 따라 점수 계산: 체크가 많을수록 민감한 피부(S)
+    const checkedCount = data.external_factors_sensitivity.length;
+    if (checkedCount >= 5) score -= 20;
+    else if (checkedCount >= 3) score -= 10;
+    else if (checkedCount >= 1) score -= 5;
+  }
+
+  // 화학성분 반응
+  if (data.chemical_reaction) {
+    score -= (data.chemical_reaction - 3) * 8;
+  }
+
+  // 피부 상태 체크
+  if (data.skin_condition_check && Array.isArray(data.skin_condition_check)) {
+    // 체크 수에 따라 점수 계산
+    const checkedCount = data.skin_condition_check.length;
+    if (checkedCount >= 3) score -= 15;
+    else if (checkedCount >= 2) score -= 10;
+    else if (checkedCount >= 1) score -= 5;
+  }
+
+  return Math.max(0, Math.min(100, score));
+}
+
+// P/N 점수 계산 (색소침착/비색소침착)
+function calculatePNScore(data: SurveyData): number {
+  let score = 50;
+
+  // 자외선 반응
+  if (data.uv_reaction) {
+    score -= (data.uv_reaction - 3) * 10;
+  }
+  
+  // 색소침착 정도
+  if (data.pigmentation_level) {
+    score -= (data.pigmentation_level - 3) * 10;
+  }
+
+  // 피부톤 균일도
+  if (data.skin_tone_uniformity) {
+    score -= (data.skin_tone_uniformity - 3) * 8;
+  }
+
+  // 색소침착 요인
+  if (data.pigmentation_factors) {
+    score -= (data.pigmentation_factors - 3) * 7;
+  }
+
+  return Math.max(0, Math.min(100, score));
+}
+
+// W/T 점수 계산 (주름/탄력)
+function calculateWTScore(data: SurveyData): number {
+  let score = 50;
+
+  // 주름 상태
+  if (data.wrinkle_state) {
+    score -= (data.wrinkle_state - 3) * 10;
+  }
+  
+  // 탄력 상태
+  if (data.skin_elasticity) {
+    score -= (data.skin_elasticity - 3) * 10;
+  }
+  
+  // 피부 회복력
+  if (data.skin_recovery) {
+    score -= (data.skin_recovery - 3) * 8;
+  }
+  
+  // 나이 고려
+  if (data.age_range) {
+    score -= (data.age_range - 3) * 7;
+  }
+
+  return Math.max(0, Math.min(100, score));
+}
+
+// 피부 장벽 기능 점수 계산
+function calculateBarrierScore(data: SurveyData): number {
+  let score = 50;
+
+  // 자극 회복 속도
+  if (data.irritation_recovery) {
+    score += (data.irritation_recovery - 3) * 10;
+  }
+
+  // 장벽 손상 빈도
+  if (data.barrier_damage_frequency) {
+    score += (data.barrier_damage_frequency - 3) * 10;
+  }
+
+  // 보습제 효과 지속시간
+  if (data.moisturizer_effect) {
+    score += (data.moisturizer_effect - 3) * 8;
+  }
+
+  // 장벽 손상 증상
+  if (data.barrier_damage_symptoms && Array.isArray(data.barrier_damage_symptoms)) {
+    const checkedCount = data.barrier_damage_symptoms.length;
+    if (checkedCount >= 5) score -= 20;
+    else if (checkedCount >= 3) score -= 15;
+    else if (checkedCount >= 1) score -= 7;
+  }
+
+  return Math.max(0, Math.min(100, score));
+}
+
+// 생활 습관 점수 계산
+function calculateLifestyleScore(data: SurveyData): number {
+  let score = 50;
+
+  // 생활 환경
+  if (data.living_environment) {
+    score += (data.living_environment - 3) * 7;
+  }
+
+  // 수면과 스트레스
+  if (data.sleep_stress) {
+    score += (data.sleep_stress - 3) * 10;
+  }
+
+  // 식습관
+  if (data.diet_habits && Array.isArray(data.diet_habits)) {
+    const checkedCount = data.diet_habits.length;
+    if (checkedCount >= 4) score -= 20;
+    else if (checkedCount >= 2) score -= 10;
+    else if (checkedCount >= 1) score -= 5;
+  }
+
+  // 계절 변화
+  if (data.seasonal_changes) {
+    score += (data.seasonal_changes - 3) * 6;
+  }
+
+  // 호르몬 변화
+  if (data.hormonal_changes) {
+    score += (data.hormonal_changes - 3) * 5;
+  }
+
+  return Math.max(0, Math.min(100, score));
+}
+
+// 바우만 피부 타입 설명
+export function getBaumannTypeDescription(skinType: string): string {
+  const descriptions: {[key: string]: string} = {
+    "DSPT": "건성, 민감성, 색소침착, 탄력형 피부로 건조함이 있고 외부 자극에 쉽게 반응하며, 색소침착이 있으면서 아직 탄력이 있는 피부입니다.",
+    "DSNT": "건성, 민감성, 비색소침착, 탄력형 피부로 건조하고 외부 자극에 쉽게 반응하며, 색소침착은 적으면서 탄력이 있는 피부입니다.",
+    "DSPW": "건성, 민감성, 색소침착, 주름형 피부로 건조하고 외부 자극에 쉽게 반응하며, 색소침착과 주름이 나타나는 피부입니다.",
+    "DSNW": "건성, 민감성, 비색소침착, 주름형 피부로 건조하고 민감하며, 색소침착은 적지만 주름이 있는 피부입니다.",
+    "DRPT": "건성, 저항성, 색소침착, 탄력형 피부로 건조하지만 외부 자극에 강하며, 색소침착이 있으면서 탄력이 있는 피부입니다.",
+    "DRNT": "건성, 저항성, 비색소침착, 탄력형 피부로 건조하지만 외부 자극에 강하며, 색소침착이 적고 탄력이 있는 피부입니다.",
+    "DRPW": "건성, 저항성, 색소침착, 주름형 피부로 건조하지만 외부 자극에 강하며, 색소침착과 주름이 나타나는 피부입니다.",
+    "DRNW": "건성, 저항성, 비색소침착, 주름형 피부로 건조하지만 외부 자극에 강하며, 색소침착은 적지만 주름이 있는 피부입니다.",
+    "OSPT": "지성, 민감성, 색소침착, 탄력형 피부로 유분이 많고 외부 자극에 쉽게 반응하며, 색소침착이 있으면서 탄력이 있는 피부입니다.",
+    "OSNT": "지성, 민감성, 비색소침착, 탄력형 피부로 유분이 많고 외부 자극에 쉽게 반응하며, 색소침착은 적고 탄력이 있는 피부입니다.",
+    "OSPW": "지성, 민감성, 색소침착, 주름형 피부로 유분이 많고 외부 자극에 쉽게 반응하며, 색소침착과 주름이 나타나는 피부입니다.",
+    "OSNW": "지성, 민감성, 비색소침착, 주름형 피부로 유분이 많고 외부 자극에 쉽게 반응하며, 색소침착은 적지만 주름이 있는 피부입니다.",
+    "ORPT": "지성, 저항성, 색소침착, 탄력형 피부로 유분이 많지만 외부 자극에 강하며, 색소침착이 있으면서 탄력이 있는 피부입니다.",
+    "ORNT": "지성, 저항성, 비색소침착, 탄력형 피부로 유분이 많지만 외부 자극에 강하며, 색소침착이 적고 탄력이 있는 피부입니다.",
+    "ORPW": "지성, 저항성, 색소침착, 주름형 피부로 유분이 많지만 외부 자극에 강하며, 색소침착과 주름이 나타나는 피부입니다.",
+    "ORNW": "지성, 저항성, 비색소침착, 주름형 피부로 유분이 많지만 외부 자극에 강하며, 색소침착은 적지만 주름이 있는 피부입니다.",
+  };
+  
+  return descriptions[skinType] || "피부 타입에 맞는 제품과 관리 방법을 선택하는 것이 중요합니다.";
+}
+
+// 피부 타입별 간단 설명
+export function getSimpleSkinTypeDescription(skinType: string): string {
+  const firstLetter = skinType.charAt(0);
+  const secondLetter = skinType.charAt(1);
+  const thirdLetter = skinType.charAt(2);
+  const fourthLetter = skinType.charAt(3);
+  
+  let description = "";
+  
+  // D/O (건성/지성)
+  if (firstLetter === 'D') {
+    description += "건성 피부: 피부가 건조하고 당김이 있어요. ";
+  } else if (firstLetter === 'O') {
+    description += "지성 피부: 유분이 많이 분비되는 경향이 있어요. ";
+  }
+  
+  // S/R (민감성/저항성)
+  if (secondLetter === 'S') {
+    description += "민감성 피부: 외부 자극에 예민하게 반응해요. ";
+  } else if (secondLetter === 'R') {
+    description += "저항성 피부: 대부분의 제품을 무리 없이 사용할 수 있어요. ";
+  }
+  
+  // P/N (색소침착/비색소침착)
+  if (thirdLetter === 'P') {
+    description += "색소침착 피부: 기미, 잡티가 생기기 쉬워요. ";
+  } else if (thirdLetter === 'N') {
+    description += "비색소침착 피부: 잡티나 기미가 잘 생기지 않아요. ";
+  }
+  
+  // W/T (주름/탄력)
+  if (fourthLetter === 'W') {
+    description += "주름형 피부: 주름이 생기기 쉬운 특성이 있어요.";
+  } else if (fourthLetter === 'T') {
+    description += "탄력형 피부: 피부 탄력이 비교적 잘 유지되는 특성이 있어요.";
+  }
+  
+  return description;
+}

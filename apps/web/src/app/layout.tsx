@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "My Skin Metrix",
-  description: "My Skin Metrix",
+  description: "나만의 피부 타입을 찾아보세요",
 };
 
 export default function RootLayout({
