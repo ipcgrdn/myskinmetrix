@@ -9,7 +9,11 @@ import { useRouter, useParams } from "next/navigation";
 
 import { ProgressBar } from "@/components/survey/ProgressBar";
 import { NavigationButtons } from "@/components/survey/NavigationButtons";
-import { QuestionCard, SliderQuestion, OptionValue } from "@/components/survey/QuestionCard";
+import {
+  QuestionCard,
+  SliderQuestion,
+  OptionValue,
+} from "@/components/survey/QuestionCard";
 
 import {
   surveyQuestions,
@@ -50,8 +54,13 @@ export default function SurveyStep() {
     if (savedData) {
       setAnswers(savedData);
       // 현재 질문에 대한 저장된 응답이 있으면 설정
-      if (currentQuestion && savedData[currentQuestion.id as keyof SurveyData] !== undefined) {
-        setCurrentAnswer(savedData[currentQuestion.id as keyof SurveyData] as OptionValue);
+      if (
+        currentQuestion &&
+        savedData[currentQuestion.id as keyof SurveyData] !== undefined
+      ) {
+        setCurrentAnswer(
+          savedData[currentQuestion.id as keyof SurveyData] as OptionValue
+        );
       } else if (currentQuestion && currentQuestion.type === "checkbox") {
         // 체크박스 타입이고 저장된 응답이 없으면 빈 배열로 초기화
         setCurrentAnswer([]);
@@ -107,7 +116,6 @@ export default function SurveyStep() {
   const currentCategoryQuestions = getQuestionsByCategory(
     currentQuestion.category
   );
-  const categoryQuestionCount = currentCategoryQuestions.length;
 
   // 현재 카테고리 내에서의 질문 번호 계산
   const categoryQuestionIndex =
