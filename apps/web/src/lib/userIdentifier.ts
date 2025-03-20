@@ -84,9 +84,9 @@ export function resetUserId(): void {
 /**
  * 사용자 데이터를 로컬 스토리지에 저장합니다.
  * @param {string} key 저장 키
- * @param {any} data 저장할 데이터
+ * @param {T} data 저장할 데이터
  */
-export function storeUserData(key: string, data: any): void {
+export function storeUserData<T extends string | number | boolean | object>(key: string, data: T): void {
   if (typeof window === 'undefined') {
     return;
   }
@@ -101,16 +101,16 @@ export function storeUserData(key: string, data: any): void {
 /**
  * 사용자 데이터를 로컬 스토리지에서 가져옵니다.
  * @param {string} key 저장 키
- * @returns {any} 저장된 데이터 또는 null
+ * @returns {T | null} 저장된 데이터 또는 null
  */
-export function getUserData<T>(key: string): T | null {
+export function getUserData<T extends string | number | boolean | object>(key: string): T | null {
   if (typeof window === 'undefined') {
     return null;
   }
   
   try {
     const data = localStorage.getItem(`my-skin-metrix-${key}`);
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) as T : null;
   } catch (error) {
     console.error('Failed to get user data:', error);
     return null;

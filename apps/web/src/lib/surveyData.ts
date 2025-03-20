@@ -1,7 +1,87 @@
-import { baumannSurveyQuestions, categoryTitles, getQuestionsByCategory } from './surveyQuestions';
+import {
+  skinTypeSurveyQuestions,
+  categoryTitles,
+  getQuestionsByCategory,
+} from "./surveyQuestions";
 
+// 설문 응답 값 타입 정의
+export type RadioAnswerValue = 1 | 2 | 3 | 4 | 5;
+export type CheckboxAnswerValue = string[];
+export type SurveyAnswerValue = RadioAnswerValue | CheckboxAnswerValue;
+
+// 설문 응답 데이터 인터페이스
 export interface SurveyData {
-  [key: string]: any;
+  // 유수분 밸런스 (D/O)
+  morning_skin_condition?: RadioAnswerValue;
+  daily_oil_pattern?: RadioAnswerValue;
+  makeup_change?: RadioAnswerValue;
+  preferred_skincare_texture?: RadioAnswerValue;
+
+  // 민감도 (S/R)
+  new_product_reaction?: RadioAnswerValue;
+  external_factors_sensitivity?: CheckboxAnswerValue;
+  chemical_reaction?: RadioAnswerValue;
+  skin_condition_check?: CheckboxAnswerValue;
+
+  // 색소침착 (P/N)
+  uv_reaction?: RadioAnswerValue;
+  pigmentation_level?: RadioAnswerValue;
+  skin_tone_uniformity?: RadioAnswerValue;
+  pigmentation_factors?: RadioAnswerValue;
+
+  // 노화도 (W/T)
+  wrinkle_state?: RadioAnswerValue;
+  skin_elasticity?: RadioAnswerValue;
+  skin_recovery?: RadioAnswerValue;
+  age_range?: RadioAnswerValue;
+
+  // 피부 장벽
+  irritation_recovery?: RadioAnswerValue;
+  barrier_damage_frequency?: RadioAnswerValue;
+  moisturizer_effect?: RadioAnswerValue;
+  barrier_damage_symptoms?: CheckboxAnswerValue;
+
+  // 생활환경
+  living_environment?: RadioAnswerValue;
+  sleep_stress?: RadioAnswerValue;
+  diet_habits?: CheckboxAnswerValue;
+  seasonal_changes?: RadioAnswerValue;
+  hormonal_changes?: RadioAnswerValue;
+}
+
+// 분석 결과 점수 인터페이스
+export interface AnalysisScores {
+  doScore: number; // 유수분 밸런스 점수
+  srScore: number; // 민감도 점수
+  pnScore: number; // 색소침착 점수
+  wtScore: number; // 노화도 점수
+  barrierScore: number; // 피부장벽 점수
+  lifestyleScore: number; // 생활환경 점수
+}
+
+// 피부 타입 문자열 타입
+export type SkinTypeString =
+  | "DSPT"
+  | "DSNT"
+  | "DSPW"
+  | "DSNW"
+  | "DRPT"
+  | "DRNT"
+  | "DRPW"
+  | "DRNW"
+  | "OSPT"
+  | "OSNT"
+  | "OSPW"
+  | "OSNW"
+  | "ORPT"
+  | "ORNT"
+  | "ORPW"
+  | "ORNW";
+
+// 분석 결과 인터페이스
+export interface AnalysisResult {
+  skinType: SkinTypeString;
+  scores: AnalysisScores;
 }
 
 // 사용자의 설문 응답을 로컬 스토리지에 저장
@@ -43,10 +123,10 @@ export function getLastCompletedStep(): number {
 export { categoryTitles, getQuestionsByCategory };
 
 // 설문 질문 데이터 - 기존 코드의 샘플 질문은 제거하고 새로운 질문 데이터 사용
-export const surveyQuestions = baumannSurveyQuestions;
+export const surveyQuestions = skinTypeSurveyQuestions;
 
-// 바우만 피부 타입 분석 함수
-export function analyzeBaumannSkinType(data: SurveyData) {
+// 맞춤형 피부 타입 분석 함수
+export function analyzeSkinType(data: SurveyData): AnalysisResult {
   // D/O (건성/지성) 분석
   const doScore = calculateDOScore(data);
   const doType = doScore < 50 ? "D" : "O";
@@ -65,20 +145,20 @@ export function analyzeBaumannSkinType(data: SurveyData) {
 
   // 피부 장벽 기능 점수
   const barrierScore = calculateBarrierScore(data);
-  
+
   // 생활 습관 점수
   const lifestyleScore = calculateLifestyleScore(data);
 
   return {
-    skinType: `${doType}${srType}${pnType}${wtType}`,
+    skinType: `${doType}${srType}${pnType}${wtType}` as SkinTypeString,
     scores: {
       doScore,
       srScore,
       pnScore,
       wtScore,
       barrierScore,
-      lifestyleScore
-    }
+      lifestyleScore,
+    },
   };
 }
 
@@ -90,7 +170,7 @@ function calculateDOScore(data: SurveyData): number {
   if (data.morning_skin_condition) {
     score += (data.morning_skin_condition - 3) * 10;
   }
-  
+
   // 하루 중 유분 패턴
   if (data.daily_oil_pattern) {
     score += (data.daily_oil_pattern - 3) * 8;
@@ -117,9 +197,12 @@ function calculateSRScore(data: SurveyData): number {
   if (data.new_product_reaction) {
     score -= (data.new_product_reaction - 3) * 10;
   }
-  
+
   // X개 외부 요인에 민감함
-  if (data.external_factors_sensitivity && Array.isArray(data.external_factors_sensitivity)) {
+  if (
+    data.external_factors_sensitivity &&
+    Array.isArray(data.external_factors_sensitivity)
+  ) {
     // 체크 수에 따라 점수 계산: 체크가 많을수록 민감한 피부(S)
     const checkedCount = data.external_factors_sensitivity.length;
     if (checkedCount >= 5) score -= 20;
@@ -152,7 +235,7 @@ function calculatePNScore(data: SurveyData): number {
   if (data.uv_reaction) {
     score -= (data.uv_reaction - 3) * 10;
   }
-  
+
   // 색소침착 정도
   if (data.pigmentation_level) {
     score -= (data.pigmentation_level - 3) * 10;
@@ -179,17 +262,17 @@ function calculateWTScore(data: SurveyData): number {
   if (data.wrinkle_state) {
     score -= (data.wrinkle_state - 3) * 10;
   }
-  
+
   // 탄력 상태
   if (data.skin_elasticity) {
     score -= (data.skin_elasticity - 3) * 10;
   }
-  
+
   // 피부 회복력
   if (data.skin_recovery) {
     score -= (data.skin_recovery - 3) * 8;
   }
-  
+
   // 나이 고려
   if (data.age_range) {
     score -= (data.age_range - 3) * 7;
@@ -218,7 +301,10 @@ function calculateBarrierScore(data: SurveyData): number {
   }
 
   // 장벽 손상 증상
-  if (data.barrier_damage_symptoms && Array.isArray(data.barrier_damage_symptoms)) {
+  if (
+    data.barrier_damage_symptoms &&
+    Array.isArray(data.barrier_damage_symptoms)
+  ) {
     const checkedCount = data.barrier_damage_symptoms.length;
     if (checkedCount >= 5) score -= 20;
     else if (checkedCount >= 3) score -= 15;
@@ -263,66 +349,69 @@ function calculateLifestyleScore(data: SurveyData): number {
   return Math.max(0, Math.min(100, score));
 }
 
-// 바우만 피부 타입 설명
-export function getBaumannTypeDescription(skinType: string): string {
-  const descriptions: {[key: string]: string} = {
-    "DSPT": "건성, 민감성, 색소침착, 탄력형 피부로 건조함이 있고 외부 자극에 쉽게 반응하며, 색소침착이 있으면서 아직 탄력이 있는 피부입니다.",
-    "DSNT": "건성, 민감성, 비색소침착, 탄력형 피부로 건조하고 외부 자극에 쉽게 반응하며, 색소침착은 적으면서 탄력이 있는 피부입니다.",
-    "DSPW": "건성, 민감성, 색소침착, 주름형 피부로 건조하고 외부 자극에 쉽게 반응하며, 색소침착과 주름이 나타나는 피부입니다.",
-    "DSNW": "건성, 민감성, 비색소침착, 주름형 피부로 건조하고 민감하며, 색소침착은 적지만 주름이 있는 피부입니다.",
-    "DRPT": "건성, 저항성, 색소침착, 탄력형 피부로 건조하지만 외부 자극에 강하며, 색소침착이 있으면서 탄력이 있는 피부입니다.",
-    "DRNT": "건성, 저항성, 비색소침착, 탄력형 피부로 건조하지만 외부 자극에 강하며, 색소침착이 적고 탄력이 있는 피부입니다.",
-    "DRPW": "건성, 저항성, 색소침착, 주름형 피부로 건조하지만 외부 자극에 강하며, 색소침착과 주름이 나타나는 피부입니다.",
-    "DRNW": "건성, 저항성, 비색소침착, 주름형 피부로 건조하지만 외부 자극에 강하며, 색소침착은 적지만 주름이 있는 피부입니다.",
-    "OSPT": "지성, 민감성, 색소침착, 탄력형 피부로 유분이 많고 외부 자극에 쉽게 반응하며, 색소침착이 있으면서 탄력이 있는 피부입니다.",
-    "OSNT": "지성, 민감성, 비색소침착, 탄력형 피부로 유분이 많고 외부 자극에 쉽게 반응하며, 색소침착은 적고 탄력이 있는 피부입니다.",
-    "OSPW": "지성, 민감성, 색소침착, 주름형 피부로 유분이 많고 외부 자극에 쉽게 반응하며, 색소침착과 주름이 나타나는 피부입니다.",
-    "OSNW": "지성, 민감성, 비색소침착, 주름형 피부로 유분이 많고 외부 자극에 쉽게 반응하며, 색소침착은 적지만 주름이 있는 피부입니다.",
-    "ORPT": "지성, 저항성, 색소침착, 탄력형 피부로 유분이 많지만 외부 자극에 강하며, 색소침착이 있으면서 탄력이 있는 피부입니다.",
-    "ORNT": "지성, 저항성, 비색소침착, 탄력형 피부로 유분이 많지만 외부 자극에 강하며, 색소침착이 적고 탄력이 있는 피부입니다.",
-    "ORPW": "지성, 저항성, 색소침착, 주름형 피부로 유분이 많지만 외부 자극에 강하며, 색소침착과 주름이 나타나는 피부입니다.",
-    "ORNW": "지성, 저항성, 비색소침착, 주름형 피부로 유분이 많지만 외부 자극에 강하며, 색소침착은 적지만 주름이 있는 피부입니다.",
+// 맞춤형 피부 타입 설명
+export function getSkinTypeDescription(skinType: SkinTypeString): string {
+  const descriptions: Record<SkinTypeString, string> = {
+    DSPT: "건성, 민감성, 색소침착, 탄력형 피부로 건조함이 있고 외부 자극에 쉽게 반응하며, 색소침착이 있으면서 아직 탄력이 있는 피부입니다.",
+    DSNT: "건성, 민감성, 비색소침착, 탄력형 피부로 건조하고 외부 자극에 쉽게 반응하며, 색소침착은 적으면서 탄력이 있는 피부입니다.",
+    DSPW: "건성, 민감성, 색소침착, 주름형 피부로 건조하고 외부 자극에 쉽게 반응하며, 색소침착과 주름이 나타나는 피부입니다.",
+    DSNW: "건성, 민감성, 비색소침착, 주름형 피부로 건조하고 민감하며, 색소침착은 적지만 주름이 있는 피부입니다.",
+    DRPT: "건성, 저항성, 색소침착, 탄력형 피부로 건조하지만 외부 자극에 강하며, 색소침착이 있으면서 탄력이 있는 피부입니다.",
+    DRNT: "건성, 저항성, 비색소침착, 탄력형 피부로 건조하지만 외부 자극에 강하며, 색소침착이 적고 탄력이 있는 피부입니다.",
+    DRPW: "건성, 저항성, 색소침착, 주름형 피부로 건조하지만 외부 자극에 강하며, 색소침착과 주름이 나타나는 피부입니다.",
+    DRNW: "건성, 저항성, 비색소침착, 주름형 피부로 건조하지만 외부 자극에 강하며, 색소침착은 적지만 주름이 있는 피부입니다.",
+    OSPT: "지성, 민감성, 색소침착, 탄력형 피부로 유분이 많고 외부 자극에 쉽게 반응하며, 색소침착이 있으면서 탄력이 있는 피부입니다.",
+    OSNT: "지성, 민감성, 비색소침착, 탄력형 피부로 유분이 많고 외부 자극에 쉽게 반응하며, 색소침착은 적고 탄력이 있는 피부입니다.",
+    OSPW: "지성, 민감성, 색소침착, 주름형 피부로 유분이 많고 외부 자극에 쉽게 반응하며, 색소침착과 주름이 나타나는 피부입니다.",
+    OSNW: "지성, 민감성, 비색소침착, 주름형 피부로 유분이 많고 외부 자극에 쉽게 반응하며, 색소침착은 적지만 주름이 있는 피부입니다.",
+    ORPT: "지성, 저항성, 색소침착, 탄력형 피부로 유분이 많지만 외부 자극에 강하며, 색소침착이 있으면서 탄력이 있는 피부입니다.",
+    ORNT: "지성, 저항성, 비색소침착, 탄력형 피부로 유분이 많지만 외부 자극에 강하며, 색소침착이 적고 탄력이 있는 피부입니다.",
+    ORPW: "지성, 저항성, 색소침착, 주름형 피부로 유분이 많지만 외부 자극에 강하며, 색소침착과 주름이 나타나는 피부입니다.",
+    ORNW: "지성, 저항성, 비색소침착, 주름형 피부로 유분이 많지만 외부 자극에 강하며, 색소침착은 적지만 주름이 있는 피부입니다.",
   };
-  
-  return descriptions[skinType] || "피부 타입에 맞는 제품과 관리 방법을 선택하는 것이 중요합니다.";
+
+  return (
+    descriptions[skinType] ||
+    "피부 타입에 맞는 제품과 관리 방법을 선택하는 것이 중요합니다."
+  );
 }
 
 // 피부 타입별 간단 설명
-export function getSimpleSkinTypeDescription(skinType: string): string {
+export function getSimpleSkinTypeDescription(skinType: SkinTypeString): string {
   const firstLetter = skinType.charAt(0);
   const secondLetter = skinType.charAt(1);
   const thirdLetter = skinType.charAt(2);
   const fourthLetter = skinType.charAt(3);
-  
+
   let description = "";
-  
+
   // D/O (건성/지성)
-  if (firstLetter === 'D') {
+  if (firstLetter === "D") {
     description += "건성 피부: 피부가 건조하고 당김이 있어요. ";
-  } else if (firstLetter === 'O') {
+  } else if (firstLetter === "O") {
     description += "지성 피부: 유분이 많이 분비되는 경향이 있어요. ";
   }
-  
+
   // S/R (민감성/저항성)
-  if (secondLetter === 'S') {
+  if (secondLetter === "S") {
     description += "민감성 피부: 외부 자극에 예민하게 반응해요. ";
-  } else if (secondLetter === 'R') {
+  } else if (secondLetter === "R") {
     description += "저항성 피부: 대부분의 제품을 무리 없이 사용할 수 있어요. ";
   }
-  
+
   // P/N (색소침착/비색소침착)
-  if (thirdLetter === 'P') {
+  if (thirdLetter === "P") {
     description += "색소침착 피부: 기미, 잡티가 생기기 쉬워요. ";
-  } else if (thirdLetter === 'N') {
+  } else if (thirdLetter === "N") {
     description += "비색소침착 피부: 잡티나 기미가 잘 생기지 않아요. ";
   }
-  
+
   // W/T (주름/탄력)
-  if (fourthLetter === 'W') {
+  if (fourthLetter === "W") {
     description += "주름형 피부: 주름이 생기기 쉬운 특성이 있어요.";
-  } else if (fourthLetter === 'T') {
+  } else if (fourthLetter === "T") {
     description += "탄력형 피부: 피부 탄력이 비교적 잘 유지되는 특성이 있어요.";
   }
-  
+
   return description;
 }

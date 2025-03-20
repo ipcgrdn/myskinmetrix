@@ -34,62 +34,64 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-teal-50 via-cyan-50 to-white text-slate-800 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-teal-50/70 via-cyan-50/70 to-white text-slate-800 relative overflow-hidden">
       {/* 배경 도형 요소들 */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[10%] right-[15%] w-64 h-64 bg-gradient-to-br from-fuchsia-100 to-fuchsia-50 rounded-full mix-blend-multiply blur-3xl opacity-70"></div>
-        <div className="absolute top-[35%] left-[10%] w-72 h-72 bg-gradient-to-br from-cyan-100 to-teal-50 rounded-full mix-blend-multiply blur-3xl opacity-70"></div>
-        <div className="absolute bottom-[20%] right-[20%] w-80 h-80 bg-gradient-to-br from-cyan-50 to-blue-50 rounded-full mix-blend-multiply blur-3xl opacity-70"></div>
+        <div className="absolute top-[10%] right-[15%] w-96 h-96 bg-gradient-to-br from-fuchsia-100/40 to-fuchsia-50/40 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-pulse"></div>
+        <div className="absolute top-[35%] left-[10%] w-[32rem] h-[32rem] bg-gradient-to-br from-cyan-100/40 to-teal-50/40 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-pulse"></div>
+        <div className="absolute bottom-[20%] right-[20%] w-[36rem] h-[36rem] bg-gradient-to-br from-cyan-50/40 to-blue-50/40 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-pulse"></div>
       </div>
 
       {/* 헤더 섹션 */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/70 border-b border-cyan-100">
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center">
-            <Image
-              src="/logo.png"
-              alt="My Skin Metrix 로고"
-              width={44}
-              height={44}
-              className="mr-2 hidden md:block"
-            />
-            <h1 className="text-lg md:text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-500">
-              My Skin Metrix
-            </h1>
-          </div>
-          <nav className="hidden md:flex gap-8">
-            <Link
-              href="/about"
-              className="text-slate-600 hover:text-cyan-600 transition-colors text-sm font-medium"
-            >
-              서비스 소개
-            </Link>
-            <Link
-              href="/pricing"
-              className="text-slate-600 hover:text-cyan-600 transition-colors text-sm font-medium"
-            >
-              요금제
-            </Link>
-            <Link
-              href="/survey"
-              className="text-slate-600 hover:text-cyan-600 transition-colors text-sm font-medium"
-            >
-              피부 분석
-            </Link>
-          </nav>
-          <div className="flex gap-4 items-center">
-            <Link
-              href="/login"
-              className="text-slate-600 hover:text-cyan-600 transition-colors text-sm font-medium"
-            >
-              로그인
-            </Link>
-            <Link
-              href="/register"
-              className="px-4 py-2 bg-cyan-500 text-white rounded-md text-sm font-medium shadow-lg hover:shadow-cyan-200 hover:bg-cyan-600 transition-all hidden md:block"
-            >
-              회원가입
-            </Link>
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/60 border-b border-white/20 supports-[backdrop-filter]:bg-white/60">
+        <div className="container mx-auto px-4 md:px-6 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-3">
+              <Image
+                src="/logo.png"
+                alt="My Skin Metrix 로고"
+                width={32}
+                height={32}
+                className="w-8 h-8 hidden md:block"
+              />
+              <h1 className="text-sm md:text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-500">
+                My Skin Metrix
+              </h1>
+            </div>
+            <nav className="hidden md:flex gap-8">
+              <Link
+                href="/about"
+                className="text-slate-600 hover:text-cyan-600 transition-colors duration-200 text-sm font-medium"
+              >
+                서비스 소개
+              </Link>
+              <Link
+                href="/pricing"
+                className="text-slate-600 hover:text-cyan-600 transition-colors duration-200 text-sm font-medium"
+              >
+                요금제
+              </Link>
+              <Link
+                href="/survey"
+                className="text-slate-600 hover:text-cyan-600 transition-colors duration-200 text-sm font-medium"
+              >
+                피부 분석
+              </Link>
+            </nav>
+            <div className="flex gap-4 items-center">
+              <Link
+                href="/login"
+                className="text-slate-600 hover:text-cyan-600 transition-colors duration-200 text-sm font-medium"
+              >
+                로그인
+              </Link>
+              <Link
+                href="/register"
+                className="px-4 py-2 bg-cyan-500 text-white rounded-full text-sm font-medium shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 hover:bg-cyan-600 transition-all duration-300 hidden md:block"
+              >
+                회원가입
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -99,16 +101,16 @@ export default function Home() {
         initial={isLoaded ? "hidden" : "visible"}
         animate="visible"
         variants={fadeIn}
-        className="container mx-auto px-6 pt-20 pb-24 flex flex-col md:flex-row items-center gap-12 relative z-10"
+        className="container mx-auto px-4 md:px-6 pt-12 md:pt-24 pb-16 md:pb-32 flex flex-col md:flex-row items-center gap-8 md:gap-16 relative z-10"
       >
-        <motion.div variants={slideUp} className="md:w-1/2 space-y-6">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="h-px w-10 bg-cyan-500"></div>
-            <span className="text-cyan-600 font-medium text-sm px-3 py-1 rounded-full bg-cyan-50">
-              바우만 피부 타입 분석
+        <motion.div variants={slideUp} className="md:w-1/2 space-y-6 md:space-y-8 text-center md:text-left">
+          <div className="flex items-center gap-2 mb-4 md:mb-6 justify-center md:justify-start">
+            <div className="h-px w-8 md:w-10 bg-cyan-500/50"></div>
+            <span className="text-cyan-600 font-medium text-xs md:text-sm px-3 md:px-4 py-1 md:py-1.5 rounded-full bg-cyan-50/50 backdrop-blur-sm border border-cyan-100/20 whitespace-nowrap">
+              맞춤형 피부 타입 분석
             </span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold text-slate-800 leading-tight">
+          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-slate-800 leading-tight tracking-tight">
             과학적
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-500">
               {" "}
@@ -118,33 +120,33 @@ export default function Home() {
             <br />
             맞춤형 솔루션
           </h2>
-          <p className="text-sm md:text-lg text-slate-600 max-w-xl">
-            바우만 피부 타입 시스템 기반의 과학적 분석으로 16가지 피부 타입을
+          <p className="text-sm md:text-base text-slate-600 max-w-xl leading-relaxed mx-auto md:mx-0">
+            16가지 피부 타입 시스템 기반의 과학적 분석으로 피부 타입을
             정확히 진단하고 맞춤형 관리 방법을 제안합니다.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 pt-6">
+          <div className="flex flex-col md:flex-row gap-3 md:gap-4 pt-4 md:pt-8 justify-center md:justify-start">
             <Link
               href="/survey"
-              className="text-sm md:text-base px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl text-center font-medium shadow-xl hover:shadow-cyan-200 hover:shadow-xl transition-all relative overflow-hidden group"
+              className="group relative px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-full text-center font-medium shadow-xl shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all duration-300 overflow-hidden text-xs md:text-base"
             >
               <span className="relative z-10">무료 분석 시작하기</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-blue-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-blue-600 translate-y-[102%] group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
             </Link>
             <Link
               href="/about"
-              className="text-sm md:text-base px-8 py-4 bg-white backdrop-blur-sm border border-cyan-200 text-slate-700 rounded-xl text-center font-medium hover:bg-cyan-50 transition-all"
+              className="px-6 md:px-8 py-3 md:py-4 bg-white/60 backdrop-blur-sm border border-cyan-100/20 text-slate-700 rounded-full text-center font-medium hover:bg-white/80 transition-all duration-300 text-xs md:text-base"
             >
               자세히 알아보기
             </Link>
           </div>
 
           {/* 신뢰 배지 */}
-          <div className="flex flex-wrap items-center gap-6 pt-8">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-cyan-100 rounded-full flex items-center justify-center">
+          <div className="flex flex-wrap items-center gap-4 md:gap-6 pt-4 md:pt-12 justify-center md:justify-start">
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-cyan-50/50 backdrop-blur-sm rounded-full flex items-center justify-center border border-cyan-100/20">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-cyan-500"
+                  className="h-4 w-4 md:h-5 md:w-5 text-cyan-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -152,18 +154,18 @@ export default function Home() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                     d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                   />
                 </svg>
               </div>
-              <span className="text-xs text-slate-500">과학적 진단</span>
+              <span className="text-xs md:text-sm text-slate-500">과학적 진단</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-cyan-100 rounded-full flex items-center justify-center">
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-cyan-50/50 backdrop-blur-sm rounded-full flex items-center justify-center border border-cyan-100/20">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-cyan-500"
+                  className="h-4 w-4 md:h-5 md:w-5 text-cyan-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -171,18 +173,18 @@ export default function Home() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                     d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                   />
                 </svg>
               </div>
-              <span className="text-xs text-slate-500">개인정보 보호</span>
+              <span className="text-xs md:text-sm text-slate-500">개인정보 보호</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-cyan-100 rounded-full flex items-center justify-center">
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-cyan-50/50 backdrop-blur-sm rounded-full flex items-center justify-center border border-cyan-100/20">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-cyan-500"
+                  className="h-4 w-4 md:h-5 md:w-5 text-cyan-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -190,28 +192,30 @@ export default function Home() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                     d="M13 10V3L4 14h7v7l9-11h-7z"
                   />
                 </svg>
               </div>
-              <span className="text-xs text-slate-500">실시간 결과</span>
+              <span className="text-xs md:text-sm text-slate-500">실시간 결과</span>
             </div>
           </div>
         </motion.div>
+
+        {/* 피부 분석 결과 카드 */}
         <motion.div
           variants={slideUp}
-          className="w-full pt-12 md:pt-0 md:w-1/2 flex justify-center"
+          className="w-full md:w-1/2 flex justify-center px-4 md:px-0"
         >
-          <div className="relative w-full max-w-md aspect-square rounded-2xl overflow-hidden shadow-2xl">
+          <div className="relative w-full max-w-[300px] md:max-w-md aspect-[4/5] md:aspect-square rounded-2xl overflow-hidden shadow-2xl">
             <div className="absolute inset-0 bg-gradient-to-tr from-teal-500 via-cyan-500 to-blue-500"></div>
-            <div className="absolute inset-0 flex items-center justify-center p-8">
-              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 w-full max-w-xs border border-white/30 shadow-lg">
-                <div className="flex gap-3 items-center mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center border border-white/30">
+            <div className="absolute inset-0 flex items-center justify-center p-4 md:p-8">
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-4 md:p-6 w-full max-w-xs border border-white/30 shadow-lg">
+                <div className="flex gap-3 items-center mb-4 md:mb-6">
+                  <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl bg-white/20 flex items-center justify-center border border-white/30">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-white"
+                      className="h-4 w-4 md:h-6 md:w-6 text-white"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -219,61 +223,61 @@ export default function Home() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
+                        strokeWidth={1.5}
                         d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                       />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-white font-medium">바우만 피부 타입</h3>
-                    <p className="text-white/80 text-sm">DSPT 피부 유형</p>
+                    <h3 className="text-white font-medium text-xs md:text-base">맞춤형 피부 타입</h3>
+                    <p className="text-white/80 text-[10px] md:text-sm">DSPT 피부 유형</p>
                   </div>
                 </div>
-                <div className="space-y-5">
+                <div className="space-y-3 md:space-y-5">
                   <div className="space-y-1">
-                    <div className="flex justify-between text-xs mb-1">
+                    <div className="flex justify-between text-[10px] md:text-xs mb-1">
                       <span className="text-white/90">유수분 밸런스 (D/O)</span>
                       <span className="text-white font-medium">75%</span>
                     </div>
-                    <div className="w-full bg-white/30 h-2 rounded-full overflow-hidden">
+                    <div className="w-full bg-white/30 h-1 md:h-2 rounded-full overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-blue-300 to-blue-400 h-2 rounded-full"
+                        className="bg-gradient-to-r from-blue-300 to-blue-400 h-full rounded-full"
                         style={{ width: "75%" }}
                       ></div>
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <div className="flex justify-between text-xs mb-1">
+                    <div className="flex justify-between text-[10px] md:text-xs mb-1">
                       <span className="text-white/90">민감도 (S/R)</span>
                       <span className="text-white font-medium">55%</span>
                     </div>
-                    <div className="w-full bg-white/30 h-2 rounded-full overflow-hidden">
+                    <div className="w-full bg-white/30 h-1 md:h-2 rounded-full overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-red-300 to-red-400 h-2 rounded-full"
+                        className="bg-gradient-to-r from-red-300 to-red-400 h-full rounded-full"
                         style={{ width: "55%" }}
                       ></div>
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <div className="flex justify-between text-xs mb-1">
+                    <div className="flex justify-between text-[10px] md:text-xs mb-1">
                       <span className="text-white/90">색소침착 (P/N)</span>
                       <span className="text-white font-medium">40%</span>
                     </div>
-                    <div className="w-full bg-white/30 h-2 rounded-full overflow-hidden">
+                    <div className="w-full bg-white/30 h-1 md:h-2 rounded-full overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-amber-300 to-amber-400 h-2 rounded-full"
+                        className="bg-gradient-to-r from-amber-300 to-amber-400 h-full rounded-full"
                         style={{ width: "40%" }}
                       ></div>
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <div className="flex justify-between text-xs mb-1">
+                    <div className="flex justify-between text-[10px] md:text-xs mb-1">
                       <span className="text-white/90">노화도 (W/T)</span>
                       <span className="text-white font-medium">60%</span>
                     </div>
-                    <div className="w-full bg-white/30 h-2 rounded-full overflow-hidden">
+                    <div className="w-full bg-white/30 h-1 md:h-2 rounded-full overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-green-300 to-green-400 h-2 rounded-full"
+                        className="bg-gradient-to-r from-green-300 to-green-400 h-full rounded-full"
                         style={{ width: "60%" }}
                       ></div>
                     </div>
@@ -281,11 +285,11 @@ export default function Home() {
                 </div>
 
                 {/* 16가지 피부 타입 라벨 */}
-                <div className="grid grid-cols-4 gap-1 mt-6">
+                <div className="grid grid-cols-4 gap-0.5 md:gap-1 mt-3 md:mt-6">
                   {["DSPT", "DSNT", "DRPT", "DRNT"].map((type) => (
                     <div
                       key={type}
-                      className={`text-xs text-center py-1 rounded ${type === "DSPT" ? "bg-white/20 text-white" : "text-white/60"}`}
+                      className={`text-[8px] md:text-xs text-center py-0.5 md:py-1 rounded ${type === "DSPT" ? "bg-white/20 text-white" : "text-white/60"}`}
                     >
                       {type}
                     </div>
@@ -327,41 +331,41 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
         variants={staggerChildren}
-        className="py-24 relative z-10"
+        className="py-16 md:py-32 relative z-10"
       >
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-4 md:px-6">
           <motion.div
             variants={fadeIn}
-            className="flex items-center gap-2 justify-center mb-2"
+            className="flex items-center gap-2 justify-center mb-4"
           >
-            <div className="h-px w-6 bg-cyan-500"></div>
-            <span className="text-cyan-600 font-medium text-sm px-3 py-1 rounded-full bg-cyan-50">
+            <div className="h-px w-4 md:w-6 bg-cyan-500/50"></div>
+            <span className="text-cyan-600 font-medium text-xs md:text-sm px-3 md:px-4 py-1 md:py-1.5 rounded-full bg-cyan-50/50 backdrop-blur-sm border border-cyan-100/20">
               핵심 기능
             </span>
-            <div className="h-px w-6 bg-cyan-500"></div>
+            <div className="h-px w-4 md:w-6 bg-cyan-500/50"></div>
           </motion.div>
           <motion.h2
             variants={slideUp}
-            className="text-2xl md:text-4xl font-extrabold text-center mb-16 text-slate-800"
+            className="text-lg md:text-2xl lg:text-3xl font-bold text-center mb-12 md:mb-20 text-slate-800 tracking-tight"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-500">
               피부과학
             </span>{" "}
             기반 분석 기술
           </motion.h2>
-          <div className="grid md:grid-cols-3 gap-8 md:gap-6 lg:gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
             <motion.div
               variants={slideUp}
-              className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl border border-cyan-100 hover:border-cyan-300 transition-all duration-300 shadow-lg hover:shadow-xl group hover:-translate-y-1"
+              className="group bg-white/60 backdrop-blur-sm p-6 md:p-8 rounded-3xl border border-cyan-100/20 hover:border-cyan-200/40 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
             >
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-teal-500 to-cyan-500 text-white rounded-2xl flex items-center justify-center mb-8 transform group-hover:rotate-6 transition-all duration-300">
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-teal-500 to-cyan-500 text-white rounded-2xl flex items-center justify-center mb-6 md:mb-8 transform group-hover:rotate-6 transition-all duration-300 shadow-lg shadow-teal-500/20">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-8 h-8"
+                  className="w-6 h-6 md:w-8 md:h-8"
                 >
                   <path
                     strokeLinecap="round"
@@ -370,26 +374,26 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-4 text-slate-800">
-                바우만 피부 분석
+              <h3 className="text-base md:text-lg lg:text-xl font-bold mb-3 md:mb-4 text-slate-800">
+                맞춤형 피부 분석
               </h3>
-              <p className="text-slate-600 text-sm md:text-base">
-                바우만 피부 타입 시스템을 기반으로 4가지 차원(D/O, S/R, P/N,
+              <p className="text-sm md:text-base text-slate-600 leading-relaxed">
+                과학적 피부 타입 시스템을 기반으로 4가지 차원(D/O, S/R, P/N,
                 W/T)에서 16가지 피부 타입을 정확하게 진단합니다.
               </p>
             </motion.div>
             <motion.div
               variants={slideUp}
-              className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl border border-cyan-100 hover:border-cyan-300 transition-all duration-300 shadow-lg hover:shadow-xl group hover:-translate-y-1"
+              className="group bg-white/60 backdrop-blur-sm p-6 md:p-8 rounded-3xl border border-cyan-100/20 hover:border-cyan-200/40 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
             >
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-teal-500 to-cyan-500 text-white rounded-2xl flex items-center justify-center mb-8 transform group-hover:rotate-6 transition-all duration-300">
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-teal-500 to-cyan-500 text-white rounded-2xl flex items-center justify-center mb-6 md:mb-8 transform group-hover:rotate-6 transition-all duration-300 shadow-lg shadow-teal-500/20">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-8 h-8"
+                  className="w-6 h-6 md:w-8 md:h-8"
                 >
                   <path
                     strokeLinecap="round"
@@ -398,26 +402,26 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-4 text-slate-800">
+              <h3 className="text-base md:text-lg lg:text-xl font-bold mb-3 md:mb-4 text-slate-800">
                 맞춤형 솔루션
               </h3>
-              <p className="text-slate-600 text-sm md:text-base">
+              <p className="text-sm md:text-base text-slate-600 leading-relaxed">
                 진단된 피부 타입에 따라 장벽 기능, 생활 습관 등을 고려한 최적의
                 스킨케어 루틴과 제품을 추천합니다.
               </p>
             </motion.div>
             <motion.div
               variants={slideUp}
-              className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl border border-cyan-100 hover:border-cyan-300 transition-all duration-300 shadow-lg hover:shadow-xl group hover:-translate-y-1"
+              className="group bg-white/60 backdrop-blur-sm p-6 md:p-8 rounded-3xl border border-cyan-100/20 hover:border-cyan-200/40 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
             >
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-teal-500 to-cyan-500 text-white rounded-2xl flex items-center justify-center mb-8 transform group-hover:rotate-6 transition-all duration-300">
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-teal-500 to-cyan-500 text-white rounded-2xl flex items-center justify-center mb-6 md:mb-8 transform group-hover:rotate-6 transition-all duration-300 shadow-lg shadow-teal-500/20">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-8 h-8"
+                  className="w-6 h-6 md:w-8 md:h-8"
                 >
                   <path
                     strokeLinecap="round"
@@ -426,10 +430,10 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-4 text-slate-800">
+              <h3 className="text-base md:text-lg lg:text-xl font-bold mb-3 md:mb-4 text-slate-800">
                 데이터 추적
               </h3>
-              <p className="text-slate-600 text-sm md:text-base">
+              <p className="text-sm md:text-base text-slate-600 leading-relaxed">
                 시간에 따른 피부 변화를 추적하고 시각화하여 케어 효과를 확인하고
                 최적의 관리 방법을 찾아드립니다.
               </p>
@@ -450,12 +454,11 @@ export default function Home() {
           <div className="max-w-5xl mx-auto">
             <motion.div variants={slideUp} className="text-center mb-16">
               <h2 className="text-xl md:text-4xl font-extrabold text-slate-800 mb-6">
-                바우만 피부 타입 시스템
+                맞춤형 피부 타입 시스템
               </h2>
               <p className="text-sm md:text-base text-slate-600 max-w-3xl mx-auto">
-                전 세계적으로 인정받는 16가지 피부 타입 분류 체계로, 4가지 주요
-                차원에서 피부를 정밀하게 분석하여 개인화된 스킨케어 솔루션을
-                제공합니다.
+                과학적 피부 타입 시스템을 기반으로 정밀 분석으로 16가지 피부 타입을
+                진단하여 개인화된 스킨케어 솔루션을 제공합니다.
               </p>
             </motion.div>
 
@@ -536,33 +539,36 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
         variants={fadeIn}
-        className="py-28 relative z-10"
+        className="py-32 relative z-10"
       >
         <div className="container mx-auto px-6">
-          <div className="relative rounded-3xl overflow-hidden">
+          <div className="relative rounded-[2.5rem] overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500 via-blue-500 to-teal-500"></div>
-            <div className="absolute inset-0 bg-[url('/logo.png')] opacity-20"></div>
-            <div className="relative px-8 py-16 md:py-24 md:px-16 border border-white/20">
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white to-transparent"></div>
-              <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white to-transparent"></div>
+            <div className="absolute inset-0 bg-[url('/logo.png')] opacity-10 mix-blend-overlay"></div>
+            <div className="relative px-8 py-20 md:py-28 md:px-16 border border-white/10">
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
               <motion.div
                 variants={slideUp}
                 className="max-w-2xl mx-auto text-center"
               >
-                <h2 className="text-xl md:text-2xl font-extrabold text-white mb-8 leading-tight">
-                  지금 바로 과학적인
+                <h2 className="text-lg md:text-3xl font-bold text-white mb-8 leading-tight tracking-tight">
+                  지금 바로 맞춤형
                   <br />
                   피부 분석을 시작하세요
                 </h2>
-                <p className="text-white/90 mb-10 text-sm md:text-base max-w-xl mx-auto">
-                  바우만 피부 타입 시스템 기반의 정밀 분석으로 당신만을 위한
+                <p className="text-white/90 mb-12 text-sm md:text-lg max-w-xl mx-auto leading-relaxed">
+                  과학적 피부 타입 시스템 기반의 정밀 분석으로 당신만을 위한
                   맞춤형 피부 관리 솔루션을 만나보세요.
                 </p>
                 <Link
                   href="/survey"
-                  className="px-10 py-5 bg-white text-white bg-clip-text bg-gradient-to-r from-cyan-100 to-blue-100 rounded-xl text-lg md:text-xl font-bold shadow-xl hover:shadow-white/30 hover:bg-white/90 transition-all inline-block border-2 border-transparent hover:border-white/20"
+                  className="group relative inline-flex items-center justify-center px-8 md:px-12 py-3 md:py-5 bg-white text-slate-800 rounded-full text-sm md:text-lg font-semibold shadow-xl hover:shadow-white/30 transition-all duration-300 overflow-hidden"
                 >
-                  무료 분석 시작하기
+                  <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-500">
+                    무료 분석 시작하기
+                  </span>
+                  <div className="absolute inset-0 bg-white/90 translate-y-[102%] group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
                 </Link>
               </motion.div>
             </div>
@@ -581,7 +587,7 @@ export default function Home() {
                 </h3>
               </div>
               <p className="text-slate-500 max-w-xs mb-6 text-sm">
-                바우만 피부 타입 시스템 기반의 과학적 분석으로 당신만의 피부
+                과학적 피부 타입 시스템을 기반으로 정밀 분석으로 당신만의 피부
                 타입을 정확히 진단하고 맞춤형 케어 솔루션을 제공합니다.
               </p>
 

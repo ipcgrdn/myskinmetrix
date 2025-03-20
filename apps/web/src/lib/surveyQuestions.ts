@@ -1,21 +1,28 @@
 // 설문 질문 타입 정의
+export type QuestionType = "radio" | "checkbox" | "slider" | "text";
+export type QuestionCategory = "DO" | "SR" | "PN" | "WT" | "barrier" | "lifestyle";
+
+export interface QuestionOption<T = string | number> {
+  id: string;
+  text: string;
+  value: T;
+}
+
+export interface SliderConfig {
+  min: number;
+  max: number;
+  step: number;
+  labels?: string[];
+}
+
 export interface SurveyQuestion {
   id: string;
-  type: "radio" | "checkbox" | "slider" | "text";
+  type: QuestionType;
   question: string;
   description?: string;
-  category: "DO" | "SR" | "PN" | "WT" | "barrier" | "lifestyle"; // 바우만 시스템 카테고리
-  options?: Array<{
-    id: string;
-    text: string;
-    value: any;
-  }>;
-  sliderConfig?: {
-    min: number;
-    max: number;
-    step: number;
-    labels?: string[];
-  };
+  category: QuestionCategory;
+  options?: QuestionOption[];
+  sliderConfig?: SliderConfig;
   imageUrl?: string;
 }
 
@@ -29,8 +36,8 @@ export const categoryTitles = {
   lifestyle: "생활 환경 및 습관 진단"
 };
 
-// 바우만 피부 타입 분류를 위한 설문 질문 데이터
-export const baumannSurveyQuestions: SurveyQuestion[] = [
+// 맞춤형 피부 타입 분류를 위한 설문 질문 데이터
+export const skinTypeSurveyQuestions: SurveyQuestion[] = [
   // 유수분 밸런스 진단 (D/O 지표)
   {
     id: "morning_skin_condition",
@@ -378,9 +385,9 @@ export const baumannSurveyQuestions: SurveyQuestion[] = [
 ];
 
 // 질문을 카테고리별로 가져오는 유틸리티 함수
-export function getQuestionsByCategory(category: string): SurveyQuestion[] {
-  return baumannSurveyQuestions.filter(q => q.category === category);
+export function getQuestionsByCategory(category: QuestionCategory): SurveyQuestion[] {
+  return skinTypeSurveyQuestions.filter(q => q.category === category);
 }
 
 // 전체 질문 개수
-export const totalQuestions = baumannSurveyQuestions.length; 
+export const totalQuestions = skinTypeSurveyQuestions.length; 

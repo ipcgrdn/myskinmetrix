@@ -18,27 +18,27 @@ export function NavigationButtons({
   const isLastStep = currentStep === totalSteps;
 
   return (
-    <div className="flex justify-between mt-8">
+    <div className="flex justify-between mt-8 gap-4">
       {currentStep > 1 ? (
         <button
           onClick={onPrevious}
-          className="px-6 py-2 border border-cyan-500 text-slate-700 rounded-md font-medium hover:bg-cyan-50 transition-all text-sm md:text-base"
+          className="flex-1 px-4 md:px-6 py-2 md:py-3 border border-cyan-200 text-slate-700 rounded-xl font-medium hover:bg-cyan-50/50 active:scale-[0.98] transition-all duration-200 text-sm md:text-base backdrop-blur-sm bg-white/60 shadow-sm"
         >
           이전
         </button>
       ) : (
-        <div></div> // 첫 번째 단계에서는 이전 버튼 숨김
+        <div className="flex-1"></div>
       )}
 
       <button
         onClick={onNext}
         disabled={isNextDisabled}
         className={`
-          px-6 py-2 rounded-md font-medium transition-all text-sm md:text-base
+          flex-1 px-4 md:px-6 py-2 md:py-3 rounded-xl font-medium transition-all duration-200 text-sm md:text-base backdrop-blur-sm
           ${
             isNextDisabled
-              ? "bg-slate-200 text-slate-400 cursor-not-allowed"
-              : "bg-cyan-500 text-white shadow-md hover:bg-cyan-600"
+              ? "bg-slate-100/80 text-slate-400 cursor-not-allowed border border-slate-200"
+              : "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/20 hover:shadow-xl hover:shadow-cyan-500/30 active:scale-[0.98]"
           }
         `}
       >
