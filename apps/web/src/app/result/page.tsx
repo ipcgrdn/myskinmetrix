@@ -3,7 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
+import toast, { Toaster } from 'react-hot-toast';
 import {
   Radar,
   RadarChart,
@@ -21,6 +22,84 @@ import {
   getSimpleSkinTypeDescription,
   SkinTypeString,
 } from "@/lib/surveyData";
+import { getUserId } from "@/lib/userIdentifier";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+
+// 토스트 스타일 설정
+const toastOptions = {
+  success: {
+    icon: '✓',
+    style: {
+      background: 'rgba(255, 255, 255, 0.9)',
+      backdropFilter: 'blur(8px)',
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+      padding: '12px 16px',
+      color: '#0891b2',
+      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+      borderRadius: '12px',
+      fontSize: '14px',
+      fontWeight: '500',
+    },
+  },
+  error: {
+    icon: '✕',
+    style: {
+      background: 'rgba(255, 255, 255, 0.9)',
+      backdropFilter: 'blur(8px)',
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+      padding: '12px 16px',
+      color: '#e11d48',
+      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+      borderRadius: '12px',
+      fontSize: '14px',
+      fontWeight: '500',
+    },
+  },
+  loading: {
+    icon: '◌',
+    style: {
+      background: 'rgba(255, 255, 255, 0.9)',
+      backdropFilter: 'blur(8px)',
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+      padding: '12px 16px',
+      color: '#0891b2',
+      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+      borderRadius: '12px',
+      fontSize: '14px',
+      fontWeight: '500',
+    },
+  },
+};
+
+// API 호출 함수
+async function saveSurveyResult(answers: SurveyData, result: AnalysisResult) {
+  const tempId = getUserId();
+
+  try {
+    const response = await fetch(`${API_URL}/survey/save`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-temp-id': tempId,
+      },
+      credentials: 'include', // CORS 인증 정보 포함
+      body: JSON.stringify({
+        answers,
+        result,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to save survey result');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error saving survey result:', error);
+    throw error;
+  }
+}
 
 // 결과 타입 정의
 interface AnalysisResult {
@@ -37,40 +116,87 @@ interface AnalysisResult {
 
 export default function ResultPage() {
   const router = useRouter();
+  const navigateToSurvey = useCallback(() => {
+    router.push("/survey");
+  }, [router]);
 
+  const hasInitialized = useRef(false);
   const [surveyData, setSurveyData] = useState<SurveyData | null>(null);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    // 설문 데이터 불러오기
-    const data = getUserSurveyData();
-    if (!data || Object.keys(data).length === 0) {
-      // 설문 데이터가 없으면 설문 시작 페이지로 이동
-      router.push("/survey");
-      return;
+    async function processAndSaveSurvey() {
+      if (hasInitialized.current) return;
+      hasInitialized.current = true;
+
+      // 설문 데이터 불러오기
+      const data = getUserSurveyData();
+      if (!data || Object.keys(data).length === 0) {
+        // 설문 데이터가 없으면 설문 시작 페이지로 이동
+        navigateToSurvey();
+        return;
+      }
+
+      setSurveyData(data);
+
+      // 맞춤형 피부 타입 분석 실행
+      const result = analyzeSkinType(data);
+      setAnalysisResult(result);
+
+      // 백엔드에 결과 저장
+      setIsSaving(true);
+      const savePromise = saveSurveyResult(data, result)
+        .then(() => {
+          toast.success('분석 결과가 성공적으로 저장되었습니다.', toastOptions.success);
+        })
+        .catch(() => {
+          toast.error('분석 결과 저장에 실패했습니다.', toastOptions.error);
+        })
+        .finally(() => {
+          setIsSaving(false);
+        });
+
+      toast.promise(savePromise, {
+        loading: '분석 결과를 저장하고 있습니다...',
+        success: null,
+        error: null,
+      }, {
+        ...toastOptions.loading,
+        position: 'bottom-right',
+      });
+
+      setIsLoading(false);
     }
 
-    setSurveyData(data);
-
-    // 맞춤형 피부 타입 분석 실행
-    const result = analyzeSkinType(data);
-    setAnalysisResult(result);
-
-    setIsLoading(false);
-
-    // 여기서 백엔드 API 호출해서 결과를 가져오는 코드 추가 예정
-  }, [router]);
+    processAndSaveSurvey();
+  }, [navigateToSurvey]);
 
   // 로딩 중이거나 데이터가 없는 경우
   if (isLoading || !surveyData || !analysisResult) {
     return (
       <div className="min-h-screen flex items-center justify-center">
+        <Toaster 
+          position="bottom-right"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              background: 'rgba(255, 255, 255, 0.9)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+              borderRadius: '12px',
+            },
+          }}
+        />
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-teal-200 border-t-teal-500 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-600">결과를 분석하고 있습니다...</p>
+          <p className="text-slate-600">
+            {isSaving ? "결과를 저장하고 있습니다..." : "결과를 분석하고 있습니다..."}
+          </p>
         </div>
       </div>
     );
@@ -91,6 +217,19 @@ export default function ResultPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-50/70 via-slate-50/70 to-white">
+      <Toaster 
+        position="bottom-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: 'rgba(255, 255, 255, 0.9)',
+            backdropFilter: 'blur(8px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            borderRadius: '12px',
+          },
+        }}
+      />
       {/* 헤더 */}
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/60 border-b border-white/20">
         <div className="container mx-auto px-4 md:px-6 py-3">

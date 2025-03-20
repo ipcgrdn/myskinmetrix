@@ -6,3 +6,40 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// 사용자 모델
+model User {
+  id            String    @id @default(uuid())
+  tempId        String    @unique  // 로컬 스토리지의 임시 ID
+  email         String?   @unique  // 추후 회원가입 시 사용
+  isRegistered  Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  surveys       Survey[]
+}
+
+// 설문 모델
+model Survey {
+  id        String   @id @default(uuid())
+  userId    String
+  answers   Json     // { [key: string]: number | string[] } - 설문 응답 데이터
+  result    Result?  // 1:1 관계의 분석 결과
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// 분석 결과 모델
+model Result {
+  id        String   @id @default(uuid())
+  surveyId  String   @unique
+  skinType  String   // 'DSPT', 'OSNT' 등의 피부 타입 문자열
+  scores    Json     // { doScore: number, srScore: number, pnScore: number, wtScore: number, barrierScore: number, lifestyleScore: number }
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  survey    Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+
+  @@index([surveyId])
+}
