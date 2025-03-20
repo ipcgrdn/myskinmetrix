@@ -21,6 +21,7 @@ interface QuestionCardProps {
   onSelect: (value: OptionValue) => void;
   imageUrl?: string;
   type?: "radio" | "checkbox" | "slider";
+  onTimingUpdate?: (timing: { questionId: string; startTime: number; endTime: number }) => void;
 }
 
 export function QuestionCard({
@@ -32,7 +33,21 @@ export function QuestionCard({
   onSelect,
   imageUrl,
   type = "radio",
+  onTimingUpdate,
 }: QuestionCardProps) {
+  const [startTime] = useState(() => Date.now());
+
+  const handleSelect = (value: OptionValue) => {
+    if (onTimingUpdate) {
+      onTimingUpdate({
+        questionId: `Q${questionNumber}`,
+        startTime,
+        endTime: Date.now()
+      });
+    }
+    onSelect(value);
+  };
+
   // 체크박스 타입인 경우 CheckboxQuestion 컴포넌트 사용
   if (type === "checkbox") {
     return (
@@ -42,7 +57,7 @@ export function QuestionCard({
         description={description}
         options={options}
         selectedValues={Array.isArray(selectedValue) ? selectedValue : []}
-        onSelect={(values) => onSelect(values)}
+        onSelect={(values) => handleSelect(values)}
         imageUrl={imageUrl}
       />
     );
@@ -88,7 +103,7 @@ export function QuestionCard({
                   : "border-slate-100 hover:border-cyan-100 hover:bg-gradient-to-r hover:from-cyan-50/50 hover:to-blue-50/50"
               }
             `}
-            onClick={() => onSelect(option.value)}
+            onClick={() => handleSelect(option.value)}
           >
             <div className="flex items-start">
               <div

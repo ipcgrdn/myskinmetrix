@@ -33,6 +33,14 @@ export default function SurveyStep() {
 
   const [answers, setAnswers] = useState<SurveyData>({});
   const [currentAnswer, setCurrentAnswer] = useState<OptionValue | null>(null);
+  const [surveyMetadata, setSurveyMetadata] = useState<Required<NonNullable<SurveyData['metadata']>>>(() => {
+    const savedData = getUserSurveyData();
+    return savedData?.metadata || {
+      timings: [],
+      startedAt: Date.now(),
+      completedAt: 0
+    };
+  });
 
   // 현재 질문 가져오기
   const currentQuestion = surveyQuestions[currentStep - 1];
@@ -76,12 +84,24 @@ export default function SurveyStep() {
     setCurrentAnswer(value);
   };
 
+  // 응답 시간 업데이트 처리
+  const handleTimingUpdate = (timing: { questionId: string; startTime: number; endTime: number }) => {
+    setSurveyMetadata(prev => ({
+      ...prev,
+      timings: [...prev.timings, timing]
+    }));
+  };
+
   // 다음 단계로 이동
   const handleNext = () => {
     // 현재 응답 저장
-    const updatedAnswers = {
+    const updatedAnswers: SurveyData = {
       ...answers,
       [currentQuestion.id]: currentAnswer,
+      metadata: {
+        ...surveyMetadata,
+        completedAt: currentStep === surveyQuestions.length ? Date.now() : surveyMetadata.completedAt
+      }
     };
 
     setAnswers(updatedAnswers);
@@ -189,6 +209,7 @@ export default function SurveyStep() {
               onSelect={handleSelect}
               imageUrl={currentQuestion.imageUrl}
               type={currentQuestion.type as "radio" | "checkbox"}
+              onTimingUpdate={handleTimingUpdate}
             />
           )}
 
