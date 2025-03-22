@@ -27,7 +27,9 @@ export class SurveyService {
         data: {
           surveyId: survey.id,
           skinType: result.skinType,
-          scores: result.scores as Prisma.InputJsonValue,
+          scores: result.scores as unknown as Prisma.InputJsonValue,
+          reliability: result.reliability as unknown as Prisma.InputJsonValue,
+          recommendations: result.recommendations as unknown as Prisma.InputJsonValue,
         },
       });
 
@@ -37,5 +39,33 @@ export class SurveyService {
         result: savedResult,
       };
     });
+  }
+
+  async getResult(resultId: string) {
+    const result = await this.prisma.result.findUnique({
+      where: { id: resultId },
+      include: {
+        survey: {
+          select: {
+            answers: true,
+            createdAt: true
+          }
+        }
+      }
+    });
+
+    if (!result) return null;
+
+    return {
+      survey: result.survey,
+      result: {
+        id: result.id,
+        skinType: result.skinType,
+        scores: result.scores,
+        reliability: result.reliability,
+        recommendations: result.recommendations,
+        createdAt: result.createdAt
+      }
+    };
   }
 } 

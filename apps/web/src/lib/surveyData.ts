@@ -443,7 +443,7 @@ export function analyzeSkinType(data: SurveyData): AnalysisResult {
   const inconsistencies = checkResponseConsistency(data);
   
   // 연령대별 가중치 적용
-  const ageRange = data.age_range || 3; // 기본값: 25-34세
+  const ageRange = data.age_range || 3;
   const ageGroups: AgeGroup[] = ["under_17", "18_24", "25_34", "35_44", "over_45"];
   const ageGroup = ageGroups[Math.min(4, Math.max(0, 5 - ageRange))];
   const ageWeights = WEIGHT_CONFIG.age_factor[ageGroup];
@@ -457,22 +457,22 @@ export function analyzeSkinType(data: SurveyData): AnalysisResult {
 
   // 최종 가중치 계산 (연령 + 계절 + 환경 요인의 평균)
   const finalWeights = {
-    doWeight: (ageWeights.doWeight + seasonWeights.doWeight) / 2 * environmentFactors.humidityFactor,
-    srWeight: (ageWeights.srWeight + seasonWeights.srWeight) / 2 * environmentFactors.pollutionFactor,
-    pnWeight: (ageWeights.pnWeight + seasonWeights.pnWeight) / 2 * environmentFactors.temperatureFactor,
-    wtWeight: (ageWeights.wtWeight + seasonWeights.wtWeight) / 2,
-    barrierWeight: (ageWeights.barrierWeight + seasonWeights.barrierWeight) / 2 * environmentFactors.humidityFactor
+    doWeight: Math.round((ageWeights.doWeight + seasonWeights.doWeight) / 2 * environmentFactors.humidityFactor * 100) / 100,
+    srWeight: Math.round((ageWeights.srWeight + seasonWeights.srWeight) / 2 * environmentFactors.pollutionFactor * 100) / 100,
+    pnWeight: Math.round((ageWeights.pnWeight + seasonWeights.pnWeight) / 2 * environmentFactors.temperatureFactor * 100) / 100,
+    wtWeight: Math.round((ageWeights.wtWeight + seasonWeights.wtWeight) / 2 * 100) / 100,
+    barrierWeight: Math.round((ageWeights.barrierWeight + seasonWeights.barrierWeight) / 2 * environmentFactors.humidityFactor * 100) / 100
   };
 
   // 각 지표 점수 계산 (가중치 적용)
-  const doScore = calculateDOScore(data) * finalWeights.doWeight;
-  const srScore = calculateSRScore(data) * finalWeights.srWeight;
-  const pnScore = calculatePNScore(data) * finalWeights.pnWeight;
-  const wtScore = calculateWTScore(data) * finalWeights.wtWeight;
-  const barrierScore = calculateBarrierScore(data) * finalWeights.barrierWeight;
-  const lifestyleScore = calculateLifestyleScore(data);
+  const doScore = Math.round(calculateDOScore(data) * finalWeights.doWeight);
+  const srScore = Math.round(calculateSRScore(data) * finalWeights.srWeight);
+  const pnScore = Math.round(calculatePNScore(data) * finalWeights.pnWeight);
+  const wtScore = Math.round(calculateWTScore(data) * finalWeights.wtWeight);
+  const barrierScore = Math.round(calculateBarrierScore(data) * finalWeights.barrierWeight);
+  const lifestyleScore = Math.round(calculateLifestyleScore(data));
 
-  // 피부 타입 결정
+  // 피부 타입 결정 (점수는 정수로 비교)
   const doType = doScore < 50 ? "D" : "O";
   const srType = srScore < 50 ? "S" : "R";
   const pnType = pnScore < 50 ? "P" : "N";
@@ -489,14 +489,17 @@ export function analyzeSkinType(data: SurveyData): AnalysisResult {
   return {
     skinType: `${doType}${srType}${pnType}${wtType}` as SkinTypeString,
     scores: {
-      doScore: Math.max(0, Math.min(100, doScore)),
-      srScore: Math.max(0, Math.min(100, srScore)),
-      pnScore: Math.max(0, Math.min(100, pnScore)),
-      wtScore: Math.max(0, Math.min(100, wtScore)),
-      barrierScore: Math.max(0, Math.min(100, barrierScore)),
-      lifestyleScore,
+      doScore: Math.max(0, Math.min(100, Math.round(doScore))),
+      srScore: Math.max(0, Math.min(100, Math.round(srScore))),
+      pnScore: Math.max(0, Math.min(100, Math.round(pnScore))),
+      wtScore: Math.max(0, Math.min(100, Math.round(wtScore))),
+      barrierScore: Math.max(0, Math.min(100, Math.round(barrierScore))),
+      lifestyleScore: Math.max(0, Math.min(100, Math.round(lifestyleScore))),
     },
-    reliability,
+    reliability: {
+      ...reliability,
+      score: Math.round(reliability.score)
+    },
     recommendations
   };
 }
@@ -546,171 +549,140 @@ function generateRecommendations(data: SurveyData, scores: AnalysisScores): stri
 
 // D/O 점수 계산 (건성/지성)
 function calculateDOScore(data: SurveyData): number {
-  let score = 50; // 중간값에서 시작
+  let score = 50;
 
-  // 아침 피부 상태
   if (data.morning_skin_condition) {
-    score += (data.morning_skin_condition - 3) * 10;
+    score += Math.round((data.morning_skin_condition - 3) * 10);
   }
 
-  // 하루 중 유분 패턴
   if (data.daily_oil_pattern) {
-    score += (data.daily_oil_pattern - 3) * 8;
+    score += Math.round((data.daily_oil_pattern - 3) * 8);
   }
 
-  // 메이크업 후 변화
   if (data.makeup_change) {
-    score += (data.makeup_change - 3) * 6;
+    score += Math.round((data.makeup_change - 3) * 6);
   }
 
-  // 선호하는 스킨케어 제품 텍스처
   if (data.preferred_skincare_texture) {
-    score += (data.preferred_skincare_texture - 3) * 6;
+    score += Math.round((data.preferred_skincare_texture - 3) * 6);
   }
 
-  return Math.max(0, Math.min(100, score));
+  return Math.round(Math.max(0, Math.min(100, score)));
 }
 
 // S/R 점수 계산 (민감성/저항성)
 function calculateSRScore(data: SurveyData): number {
   let score = 50;
 
-  // 새 제품 반응
   if (data.new_product_reaction) {
-    score -= (data.new_product_reaction - 3) * 10;
+    score -= Math.round((data.new_product_reaction - 3) * 10);
   }
 
-  // X개 외부 요인에 민감함
-  if (
-    data.external_factors_sensitivity &&
-    Array.isArray(data.external_factors_sensitivity)
-  ) {
-    // 체크 수에 따라 점수 계산: 체크가 많을수록 민감한 피부(S)
+  if (data.external_factors_sensitivity && Array.isArray(data.external_factors_sensitivity)) {
     const checkedCount = data.external_factors_sensitivity.length;
     if (checkedCount >= 5) score -= 20;
     else if (checkedCount >= 3) score -= 10;
     else if (checkedCount >= 1) score -= 5;
   }
 
-  // 화학성분 반응
   if (data.chemical_reaction) {
-    score -= (data.chemical_reaction - 3) * 8;
+    score -= Math.round((data.chemical_reaction - 3) * 8);
   }
 
-  // 피부 상태 체크
   if (data.skin_condition_check && Array.isArray(data.skin_condition_check)) {
-    // 체크 수에 따라 점수 계산
     const checkedCount = data.skin_condition_check.length;
     if (checkedCount >= 3) score -= 15;
     else if (checkedCount >= 2) score -= 10;
     else if (checkedCount >= 1) score -= 5;
   }
 
-  return Math.max(0, Math.min(100, score));
+  return Math.round(Math.max(0, Math.min(100, score)));
 }
 
 // P/N 점수 계산 (색소침착/비색소침착)
 function calculatePNScore(data: SurveyData): number {
   let score = 50;
 
-  // 자외선 반응
   if (data.uv_reaction) {
-    score -= (data.uv_reaction - 3) * 10;
+    score -= Math.round((data.uv_reaction - 3) * 10);
   }
 
-  // 색소침착 정도
   if (data.pigmentation_level) {
-    score -= (data.pigmentation_level - 3) * 10;
+    score -= Math.round((data.pigmentation_level - 3) * 10);
   }
 
-  // 피부톤 균일도
   if (data.skin_tone_uniformity) {
-    score -= (data.skin_tone_uniformity - 3) * 8;
+    score -= Math.round((data.skin_tone_uniformity - 3) * 8);
   }
 
-  // 색소침착 요인
   if (data.pigmentation_factors) {
-    score -= (data.pigmentation_factors - 3) * 7;
+    score -= Math.round((data.pigmentation_factors - 3) * 7);
   }
 
-  return Math.max(0, Math.min(100, score));
+  return Math.round(Math.max(0, Math.min(100, score)));
 }
 
 // W/T 점수 계산 (주름/탄력)
 function calculateWTScore(data: SurveyData): number {
   let score = 50;
 
-  // 주름 상태
   if (data.wrinkle_state) {
-    score -= (data.wrinkle_state - 3) * 10;
+    score -= Math.round((data.wrinkle_state - 3) * 10);
   }
 
-  // 탄력 상태
   if (data.skin_elasticity) {
-    score -= (data.skin_elasticity - 3) * 10;
+    score -= Math.round((data.skin_elasticity - 3) * 10);
   }
 
-  // 피부 회복력
   if (data.skin_recovery) {
-    score -= (data.skin_recovery - 3) * 8;
+    score -= Math.round((data.skin_recovery - 3) * 8);
   }
 
-  // 나이 고려
   if (data.age_range) {
-    score -= (data.age_range - 3) * 7;
+    score -= Math.round((data.age_range - 3) * 7);
   }
 
-  return Math.max(0, Math.min(100, score));
+  return Math.round(Math.max(0, Math.min(100, score)));
 }
 
 // 피부 장벽 기능 점수 계산
 function calculateBarrierScore(data: SurveyData): number {
   let score = 50;
 
-  // 자극 회복 속도
   if (data.irritation_recovery) {
-    score += (data.irritation_recovery - 3) * 10;
+    score += Math.round((data.irritation_recovery - 3) * 10);
   }
 
-  // 장벽 손상 빈도
   if (data.barrier_damage_frequency) {
-    score += (data.barrier_damage_frequency - 3) * 10;
+    score += Math.round((data.barrier_damage_frequency - 3) * 10);
   }
 
-  // 보습제 효과 지속시간
   if (data.moisturizer_effect) {
-    score += (data.moisturizer_effect - 3) * 8;
+    score += Math.round((data.moisturizer_effect - 3) * 8);
   }
 
-  // 장벽 손상 증상
-  if (
-    data.barrier_damage_symptoms &&
-    Array.isArray(data.barrier_damage_symptoms)
-  ) {
+  if (data.barrier_damage_symptoms && Array.isArray(data.barrier_damage_symptoms)) {
     const checkedCount = data.barrier_damage_symptoms.length;
     if (checkedCount >= 5) score -= 20;
     else if (checkedCount >= 3) score -= 15;
     else if (checkedCount >= 1) score -= 7;
   }
 
-  return Math.max(0, Math.min(100, score));
+  return Math.round(Math.max(0, Math.min(100, score)));
 }
 
 // 생활 습관 점수 계산
 function calculateLifestyleScore(data: SurveyData): number {
   let score = 50;
 
-  // 생활 환경
   if (data.living_environment) {
-    score += (data.living_environment - 3) * 7;
+    score += Math.round((data.living_environment - 3) * 7);
   }
 
-  // 수면과 스트레스
   if (data.sleep_stress) {
-    score += (data.sleep_stress - 3) * 10;
+    score += Math.round((data.sleep_stress - 3) * 10);
   }
 
-  // 식습관
   if (data.diet_habits && Array.isArray(data.diet_habits)) {
     const checkedCount = data.diet_habits.length;
     if (checkedCount >= 4) score -= 20;
@@ -718,17 +690,15 @@ function calculateLifestyleScore(data: SurveyData): number {
     else if (checkedCount >= 1) score -= 5;
   }
 
-  // 계절 변화
   if (data.seasonal_changes) {
-    score += (data.seasonal_changes - 3) * 6;
+    score += Math.round((data.seasonal_changes - 3) * 6);
   }
 
-  // 호르몬 변화
   if (data.hormonal_changes) {
-    score += (data.hormonal_changes - 3) * 5;
+    score += Math.round((data.hormonal_changes - 3) * 5);
   }
 
-  return Math.max(0, Math.min(100, score));
+  return Math.round(Math.max(0, Math.min(100, score)));
 }
 
 // 맞춤형 피부 타입 설명

@@ -3,7 +3,6 @@ export interface SurveyAnswers {
 }
 
 export interface AnalysisScores {
-  [key: string]: number;
   doScore: number;
   srScore: number;
   pnScore: number;
@@ -15,4 +14,10 @@ export interface AnalysisScores {
 export interface AnalysisResult {
   skinType: string;
   scores: AnalysisScores;
+  reliability: {
+    score: number;
+    flags: string[];
+    inconsistencies: string[];
+  };
+  recommendations: string[];
 } 

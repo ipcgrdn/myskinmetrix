@@ -33,13 +33,15 @@ model Survey {
 
 // 분석 결과 모델
 model Result {
-  id        String   @id @default(uuid())
-  surveyId  String   @unique
-  skinType  String   // 'DSPT', 'OSNT' 등의 피부 타입 문자열
-  scores    Json     // { doScore: number, srScore: number, pnScore: number, wtScore: number, barrierScore: number, lifestyleScore: number }
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  survey    Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  id              String   @id @default(uuid())  // 결과 조회 및 공유에 사용될 ID
+  surveyId        String   @unique
+  skinType        String   // DSPT, OSNT 등의 피부 타입
+  scores          Json     // 각 지표별 점수
+  reliability     Json     // { score: number, flags: string[], inconsistencies: string[] }
+  recommendations Json     // string[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  survey          Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
 
   @@index([surveyId])
 }

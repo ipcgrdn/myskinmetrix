@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Headers } from '@nestjs/common';
+import { Controller, Post, Body, Headers, Get, Param, NotFoundException } from '@nestjs/common';
 import { SurveyService } from './survey.service';
 import { UserService } from '../user/user.service';
 import { SurveyAnswers, AnalysisResult } from './types';
@@ -29,5 +29,14 @@ export class SurveyController {
       data.answers,
       data.result
     );
+  }
+
+  @Get('result/:resultId')
+  async getResult(@Param('resultId') resultId: string) {
+    const result = await this.surveyService.getResult(resultId);
+    if (!result) {
+      throw new NotFoundException('결과를 찾을 수 없습니다.');
+    }
+    return result;
   }
 } 
