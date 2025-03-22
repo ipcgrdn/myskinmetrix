@@ -196,11 +196,6 @@ const CustomTooltip = ({ active, payload }: TooltipProps) => {
   );
 };
 
-interface Score {
-  name: IndicatorName;
-  value: number;
-}
-
 export default function ResultPage() {
   const router = useRouter();
   const params = useParams();
