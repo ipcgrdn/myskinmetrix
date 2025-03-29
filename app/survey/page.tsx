@@ -101,9 +101,9 @@ export default function SurveyStart() {
                 </div>
                 <p className="text-xs md:text-sm text-slate-600 flex-1 leading-relaxed">
                   <span className="font-medium text-slate-800">
-                    로그인 없이도
+                    설문 결과는
                   </span>{" "}
-                  설문 결과를 확인할 수 있습니다. 결과는 90일간 저장됩니다.
+                  사용자의 기기에만 저장됩니다.
                 </p>
               </li>
               <li className="flex gap-3 items-start group">
@@ -141,19 +141,6 @@ export default function SurveyStart() {
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-blue-600 translate-y-[102%] group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
               </Link>
             </div>
-          </div>
-
-          <div className="text-center">
-            <p className="text-slate-500 text-[10px] md:text-xs">
-              설문에 참여함으로써{" "}
-              <Link
-                href="/privacy"
-                className="text-cyan-600 hover:text-cyan-700 transition-colors duration-200 underline decoration-cyan-200 underline-offset-4"
-              >
-                개인정보처리방침
-              </Link>
-              에 동의하게 됩니다.
-            </p>
           </div>
         </div>
       </main>
