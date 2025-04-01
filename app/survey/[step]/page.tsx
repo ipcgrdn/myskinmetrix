@@ -109,7 +109,7 @@ export default function SurveyStep() {
 
     // 마지막 질문이면 결과 페이지로 이동
     if (currentStep === surveyQuestions.length) {
-      router.push("/result");
+      router.push("/survey/result");
     } else {
       router.push(`/survey/${currentStep + 1}`);
     }

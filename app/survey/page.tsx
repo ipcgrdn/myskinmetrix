@@ -28,12 +28,8 @@ export default function SurveyStart() {
           </div>
 
           <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-4 md:p-6 mb-6">
-            <h2 className="text-sm md:text-base font-semibold mb-4 md:mb-5 text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-500">
-              설문 참여 전 알아두세요
-            </h2>
-
             <ul className="space-y-4 md:space-y-8 mb-6">
-              <li className="flex gap-3 items-start group">
+              <li className="flex gap-3 items-center group">
                 <div className="w-5 h-5 md:w-8 md:h-8 bg-gradient-to-br from-teal-500 to-cyan-500 text-white rounded-xl flex items-center justify-center transform transition-all duration-300 group-hover:scale-105 shadow-md shadow-teal-500/10 flex-shrink-0 mt-0.5">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -57,7 +53,7 @@ export default function SurveyStart() {
                   을 해주세요. 현재 피부 상태에 대해 있는 그대로 답변해주세요.
                 </p>
               </li>
-              <li className="flex gap-3 items-start group">
+              <li className="flex gap-3 items-center group">
                 <div className="w-5 h-5 md:w-8 md:h-8 bg-gradient-to-br from-teal-500 to-cyan-500 text-white rounded-xl flex items-center justify-center transform transition-all duration-300 group-hover:scale-105 shadow-md shadow-teal-500/10 flex-shrink-0 mt-0.5">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -82,7 +78,7 @@ export default function SurveyStart() {
                   분석합니다.
                 </p>
               </li>
-              <li className="flex gap-3 items-start group">
+              <li className="flex gap-3 items-center group">
                 <div className="w-5 h-5 md:w-8 md:h-8 bg-gradient-to-br from-teal-500 to-cyan-500 text-white rounded-xl flex items-center justify-center transform transition-all duration-300 group-hover:scale-105 shadow-md shadow-teal-500/10 flex-shrink-0 mt-0.5">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +102,7 @@ export default function SurveyStart() {
                   사용자의 기기에만 저장됩니다.
                 </p>
               </li>
-              <li className="flex gap-3 items-start group">
+              <li className="flex gap-3 items-center group">
                 <div className="w-5 h-5 md:w-8 md:h-8 bg-gradient-to-br from-teal-500 to-cyan-500 text-white rounded-xl flex items-center justify-center transform transition-all duration-300 group-hover:scale-105 shadow-md shadow-teal-500/10 flex-shrink-0 mt-0.5">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
