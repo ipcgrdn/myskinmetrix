@@ -47,7 +47,7 @@ export default function PrivacyPolicy() {
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-white/40 p-6 md:p-8 mb-8">
             <div className="prose prose-slate max-w-none text-sm md:text-base">
               <p className="text-slate-500 mb-6">
-                마이스킨메트릭스(이하 "서비스")는 사용자의 개인정보 보호를 매우 중요하게 생각합니다. 
+                마이스킨메트릭스(이하 &quot;서비스&quot;)는 사용자의 개인정보 보호를 매우 중요하게 생각합니다. 
                 본 개인정보 처리방침은 서비스 이용 시 어떤 정보가 수집되고 어떻게 사용되는지 안내합니다.
               </p>
 

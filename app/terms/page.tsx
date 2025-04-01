@@ -46,7 +46,7 @@ export default function TermsOfService() {
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-white/40 p-6 md:p-8 mb-8">
             <div className="prose prose-slate max-w-none text-sm md:text-base">
               <p className="text-slate-500 mb-6">
-                마이스킨메트릭스(이하 "서비스")를 이용해 주셔서 감사합니다. 본 이용약관은 서비스 이용에 관한 조건과 절차, 이용자와 당사의 권리, 의무, 책임사항 등을 규정합니다.
+                마이스킨메트릭스(이하 &quot;서비스&quot;)를 이용해 주셔서 감사합니다. 본 이용약관은 서비스 이용에 관한 조건과 절차, 이용자와 당사의 권리, 의무, 책임사항 등을 규정합니다.
               </p>
 
               <h2 className="text-lg font-semibold text-slate-800 mb-3 mt-6">제1조 (목적)</h2>
@@ -60,10 +60,10 @@ export default function TermsOfService() {
               </p>
               <ul className="list-disc pl-5 space-y-2 text-slate-600 mb-6">
                 <li>
-                  <span className="font-medium">"서비스"</span>란 마이스킨메트릭스가 제공하는 퍼스널 컬러 분석 및 피부 타입 분석 서비스를 의미합니다.
+                  <span className="font-medium">&quot;서비스&quot;</span>란 마이스킨메트릭스가 제공하는 퍼스널 컬러 분석 및 피부 타입 분석 서비스를 의미합니다.
                 </li>
                 <li>
-                  <span className="font-medium">"이용자"</span>란 서비스에 접속하여 이용약관에 따라 서비스를 이용하는 모든 사용자를 의미합니다.
+                  <span className="font-medium">&quot;이용자&quot;</span>란 서비스에 접속하여 이용약관에 따라 서비스를 이용하는 모든 사용자를 의미합니다.
                 </li>
               </ul>
 
