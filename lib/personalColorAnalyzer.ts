@@ -10,7 +10,7 @@ import convert from 'color-convert';
 // Window 타입 확장
 declare global {
   interface Window {
-    faceDetectionPromise?: Promise<any>;
+    faceDetectionPromise?: Promise<void[]>;
   }
 }
 
@@ -1191,7 +1191,7 @@ export async function analyzePersonalColorEnhanced(imageUrl: string): Promise<De
     reportProgress(95, 'finalizing-result');
     
     // 최종 결과 생성
-    return {
+  return {
       type,
       season,
       tone,

@@ -50,7 +50,6 @@ export default function AnalyzingPage() {
         try {
           await Promise.race([
             // face-api.js 모델이 로드되는 것을 기다림
-            // @ts-ignore
             window.faceDetectionPromise,
             // 타임아웃 (10초)
             new Promise((_, reject) => setTimeout(() => reject(new Error('모델 로딩 타임아웃')), 10000))

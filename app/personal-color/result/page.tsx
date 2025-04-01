@@ -60,14 +60,6 @@ const seasonalCharacteristics: Record<PersonalColorType, string[]> = {
   ]
 };
 
-// 컬러 팔레트 정의
-const personalColorPalettes: Record<PersonalColorType, string[]> = {
-  'springWarm': ['#FF9AA2', '#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#FFC8A2', '#F6E6BC'],
-  'summerCool': ['#C5CAE9', '#B3E5FC', '#B2DFDB', '#D1C4E9', '#E1BEE7', '#BBDEFB', '#C8E6C9'],
-  'autumnWarm': ['#D7CCC8', '#A1887F', '#FFB300', '#8D6E63', '#FF8F00', '#BF360C', '#4E342E'],
-  'winterCool': ['#1A237E', '#006064', '#880E4F', '#311B92', '#0D47A1', '#004D40', '#B71C1C']
-};
-
 // 메이크업 팁 정의
 const makeupTips: Record<PersonalColorType, string> = {
   'springWarm': '피치, 코랄 계열의 블러셔와 립스틱이 자연스러운 생기를 부여합니다. 아이섀도우는 골드나 피치 계열로 부드럽게 연출하세요.',
@@ -357,10 +349,10 @@ export default function ResultPage() {
       <main className="container mx-auto px-4 md:px-6 py-8 md:py-12">
         <div className="max-w-4xl mx-auto">
           {/* 결과 헤더 */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
             className="text-center mb-8"
           >
             <h1 className={`text-2xl md:text-3xl font-bold mb-2 ${accentColor}`}>
@@ -555,7 +547,7 @@ export default function ResultPage() {
                   <p className="text-sm text-slate-600">
                     {makeupTips[resultType]}
                   </p>
-                </div>
+          </div>
               </motion.div>
               
               <motion.div
@@ -609,7 +601,7 @@ export default function ResultPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                       </svg>
                       <span>링크 복사하기</span>
-                    </button>
+              </button>
                     
                     {/* 카카오톡 공유 버튼 */}
                     <KakaoShareButton 

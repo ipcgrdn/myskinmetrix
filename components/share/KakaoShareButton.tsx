@@ -1,37 +1,72 @@
-import { useEffect } from 'react';
-import Script from 'next/script';
-import toast from 'react-hot-toast';
+import { useEffect } from "react";
+import Script from "next/script";
+import toast from "react-hot-toast";
 
 // 카카오톡 공유 버튼 Props 정의
 interface KakaoShareButtonProps {
-  title: string; // 공유 제목 
+  title: string; // 공유 제목
   description: string; // 공유 설명
-  imageUrl: string; // 공유 이미지 URL
+  imageUrl?: string; // 공유 이미지 URL
   buttonText?: string; // 버튼 텍스트
   onSuccess?: () => void; // 성공 콜백
-  onFail?: (error: any) => void; // 실패 콜백
+  onFail?: (error: Error) => void; // 실패 콜백
 }
 
 declare global {
   interface Window {
-    Kakao: any;
+    Kakao: {
+      init: (key: string) => void;
+      isInitialized: () => boolean;
+      Share: {
+        sendDefault: (options: KakaoShareOptions) => void;
+      };
+    };
   }
+}
+
+interface KakaoShareOptions {
+  objectType: string;
+  content: {
+    title: string;
+    description: string;
+    imageUrl?: string;
+    link: {
+      mobileWebUrl: string;
+      webUrl: string;
+    };
+  };
+  buttons?: Array<{
+    title: string;
+    link: {
+      mobileWebUrl: string;
+      webUrl: string;
+    };
+  }>;
+  [key: string]: unknown;
+}
+
+interface KakaoShareButtonProps {
+  title: string;
+  description: string;
+  imageUrl?: string;
+  buttonText?: string;
+  customToast?: boolean;
 }
 
 export default function KakaoShareButton({
   title,
   description,
   imageUrl,
-  buttonText = '카카오톡 공유하기',
+  buttonText = "카카오톡 공유하기",
   onSuccess,
-  onFail
+  onFail,
 }: KakaoShareButtonProps) {
   // 카카오 SDK 초기화
   const initializeKakao = () => {
     // 카카오톡 SDK가 로드되었는지 확인
     if (window.Kakao && !window.Kakao.isInitialized()) {
       // 카카오 JavaScript SDK 초기화 (본인의 앱 키로 변경 필요)
-      window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_APP_KEY);
+      window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_APP_KEY || "");
     }
   };
 
@@ -45,25 +80,25 @@ export default function KakaoShareButton({
   // 카카오톡 공유하기
   const shareToKakao = () => {
     if (!window.Kakao) {
-      toast.error('카카오톡 SDK를 불러오는 중 오류가 발생했습니다.', {
+      toast.error("카카오톡 SDK를 불러오는 중 오류가 발생했습니다.", {
         duration: 3000,
         style: {
-          borderRadius: '12px',
-          background: '#ffffff',
-          color: '#334155',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-          padding: '12px 16px',
-          fontWeight: '500',
-          fontSize: '14px',
-        }
+          borderRadius: "12px",
+          background: "#ffffff",
+          color: "#334155",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+          padding: "12px 16px",
+          fontWeight: "500",
+          fontSize: "14px",
+        },
       });
-      if (onFail) onFail(new Error('카카오톡 SDK 로드 실패'));
+      if (onFail) onFail(new Error("카카오톡 SDK 로드 실패"));
       return;
     }
 
     try {
-      window.Kakao.Link.sendDefault({
-        objectType: 'feed',
+      window.Kakao.Share.sendDefault({
+        objectType: "feed",
         content: {
           title: title,
           description: description,
@@ -75,14 +110,14 @@ export default function KakaoShareButton({
         },
         buttons: [
           {
-            title: '결과 보기',
+            title: "결과 보기",
             link: {
               mobileWebUrl: window.location.href,
               webUrl: window.location.href,
             },
           },
           {
-            title: '나도 분석하기',
+            title: "나도 분석하기",
             link: {
               mobileWebUrl: `${window.location.origin}/personal-color/capture`,
               webUrl: `${window.location.origin}/personal-color/capture`,
@@ -91,48 +126,48 @@ export default function KakaoShareButton({
         ],
         success: function () {
           if (onSuccess) onSuccess();
-          toast.success('카카오톡으로 공유되었습니다.', {
+          toast.success("카카오톡으로 공유되었습니다.", {
             duration: 3000,
             style: {
-              borderRadius: '12px',
-              background: '#ffffff',
-              color: '#334155',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-              padding: '12px 16px',
-              fontWeight: '500',
-              fontSize: '14px',
-            }
+              borderRadius: "12px",
+              background: "#ffffff",
+              color: "#334155",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              padding: "12px 16px",
+              fontWeight: "500",
+              fontSize: "14px",
+            },
           });
         },
-        fail: function (error: any) {
+        fail: function (error: Error) {
           if (onFail) onFail(error);
-          toast.error('공유 중 오류가 발생했습니다.', {
+          toast.error("공유 중 오류가 발생했습니다.", {
             duration: 3000,
             style: {
-              borderRadius: '12px',
-              background: '#ffffff',
-              color: '#334155',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-              padding: '12px 16px',
-              fontWeight: '500',
-              fontSize: '14px',
-            }
+              borderRadius: "12px",
+              background: "#ffffff",
+              color: "#334155",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              padding: "12px 16px",
+              fontWeight: "500",
+              fontSize: "14px",
+            },
           });
         },
       });
     } catch (error) {
-      if (onFail) onFail(error);
-      toast.error('공유 중 오류가 발생했습니다.', {
+      if (onFail) onFail(error as Error);
+      toast.error("공유 중 오류가 발생했습니다.", {
         duration: 3000,
         style: {
-          borderRadius: '12px',
-          background: '#ffffff',
-          color: '#334155',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-          padding: '12px 16px',
-          fontWeight: '500',
-          fontSize: '14px',
-        }
+          borderRadius: "12px",
+          background: "#ffffff",
+          color: "#334155",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+          padding: "12px 16px",
+          fontWeight: "500",
+          fontSize: "14px",
+        },
       });
     }
   };
@@ -145,17 +180,17 @@ export default function KakaoShareButton({
         onLoad={initializeKakao}
         strategy="lazyOnload"
       />
-      
+
       {/* 카카오톡 공유 버튼 */}
       <button
         onClick={shareToKakao}
         className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-slate-50 text-sm flex items-center gap-2"
       >
-        <svg 
-          width="18" 
-          height="18" 
-          viewBox="0 0 256 256" 
-          xmlns="http://www.w3.org/2000/svg" 
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 256 256"
+          xmlns="http://www.w3.org/2000/svg"
           preserveAspectRatio="xMidYMid"
           className="fill-current text-[#3B1E1E]"
         >
@@ -165,4 +200,4 @@ export default function KakaoShareButton({
       </button>
     </>
   );
-} 
+}

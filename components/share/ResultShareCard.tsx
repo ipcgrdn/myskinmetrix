@@ -13,7 +13,7 @@ interface ResultShareCardProps {
   buttonText?: string; // 버튼 텍스트
   customToast?: boolean; // 커스텀 토스트 사용 여부
   onSuccess?: (imageUrl: string) => void; // 성공 콜백
-  onFail?: (error: any) => void; // 실패 콜백
+  onFail?: (error: Error) => void; // 실패 콜백
 }
 
 // 트렌디한 폰트 설정
@@ -36,7 +36,6 @@ const colorGradients: Record<string, { start: string; end: string }> = {
 export default function ResultShareCard({
   title,
   detailedTitle,
-  imageUrl, // 사용하지 않음
   colorItems,
   downloadFileName = 'personal-color-result.png',
   buttonText = '이미지로 저장하기',
@@ -373,7 +372,7 @@ export default function ResultShareCard({
       }
       
       // 실패 콜백 호출
-      if (onFail) onFail(error);
+      if (onFail) onFail(error as Error);
     } finally {
       setIsGenerating(false);
     }
